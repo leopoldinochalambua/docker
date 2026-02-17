@@ -1,68 +1,70 @@
 #!/bin/bash
 set -e
 
-DOMAIN="docker-lab.example"
+echo "--- Iniciando Provisionamento em $(hostname) ---"
 
-echo "[INFO] Iniciando provisionamento da máquina..."
+# 1. Configurar /etc/hosts para resolução local
+# Mantemos o localhost e adicionamos as máquinas do lab
+cat <<EOF > /etc/hosts
+127.0.0.1   localhost
+192.168.200.10 master.docker-lab.example master
+192.168.200.21 node01.docker-lab.example node01
+192.168.200.22 node02.docker-lab.example node02
+192.168.200.50 registry.docker-lab.example registry
+EOF
 
-# Definindo o hash de IPs para que o script seja dinâmico
-declare -A HOSTS_MAP=(
-    ["master"]="192.168.200.10"
-    ["node01"]="192.168.200.21"
-    ["node02"]="192.168.200.22"
-    ["registry"]="192.168.200.50"
-)
-
-# Atualizando /etc/hosts
-echo "[INFO] Atualizando /etc/hosts..."
-sed -i '/docker-lab.example/d' /etc/hosts
-for host in "${!HOSTS_MAP[@]}"; do
-    echo "${HOSTS_MAP[$host]} ${host}.${DOMAIN}" >> /etc/hosts
-done
-
-# Detectando sistema operacional
-OS_ID=$(grep -E '^ID=' /etc/os-release | cut -d'=' -f2 | tr -d '"')
-
-# Verificando se o Docker está instalado
-if ! [ -x "$(command -v docker)" ]; then
-    echo "[INFO] Docker não está instalado. A instalação automática foi desabilitada."
-
-    # Bloco de instalação do Docker (comentado)
-    : '
-    echo "[INFO] Iniciando a instalação do Docker..."
-
-    if [[ "$OS_ID" == "ubuntu" ]]; then
-        # Instalação no Ubuntu (Jammy)
-        sudo apt-get update
-        sudo apt-get install -y ca-certificates curl gnupg lsb-release
-        sudo mkdir -p /etc/apt/keyrings
-        curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo gpg --dearmor -o /etc/apt/keyrings/docker.gpg
-        echo "deb [arch=$(dpkg --print-architecture) signed-by=/etc/apt/keyrings/docker.gpg] https://download.docker.com/linux/ubuntu $(lsb_release -cs) stable" | sudo tee /etc/apt/sources.list.d/docker.list > /dev/null
-        sudo apt-get update
-        sudo apt-get install -y docker-ce docker-ce-cli containerd.io docker-buildx-plugin docker-compose-plugin
-
-    elif [[ "$OS_ID" =~ ^(almalinux|centos|rocky)$ ]]; then
-        # Instalação no AlmaLinux/RHEL
-        sudo dnf update -y
-        sudo dnf install -y dnf-utils
-        sudo dnf config-manager --add-repo https://download.docker.com/linux/centos/docker-ce.repo
-        sudo dnf install -y docker-ce docker-ce-cli containerd.io docker-buildx-plugin docker-compose-plugin
-
-    else
-        echo "[ERROR] Sistema operacional não suportado para instalação automática do Docker."
-        exit 1
-    fi
-
-    # Habilitando e iniciando o serviço Docker
-    sudo systemctl enable --now docker
-
-    # Adicionando o usuário 'vagrant' ao grupo 'docker'
-    if id "vagrant" &>/dev/null; then
-        sudo usermod -aG docker vagrant
-    fi
-    '
-else
-    echo "[INFO] Docker já está instalado. Nenhuma ação necessária."
+# 2. Detectar SO e Instalar Docker (COMENTADO)
+if [ -f /etc/debian_version ]; then
+    OS_TYPE="debian"
+elif [ -f /etc/redhat-release ]; then
+    OS_TYPE="rhel"
 fi
 
-echo "[INFO] Provisionamento concluído com sucesso!"
+echo "[INFO] Instalação automática do Docker para $OS_TYPE está desativada (bloco comentado)."
+
+: '
+if [ "$OS_TYPE" == "debian" ]; then
+    echo "Sabor detectado: Debian/Ubuntu"
+    apt-get update
+    apt-get install -y apt-transport-https ca-certificates curl gnupg lsb-release
+    curl -fsSL https://download.docker.com/linux/debian/gpg | gpg --dearmor -o /usr/share/keyrings/docker-archive-keyring.gpg
+    echo "deb [arch=$(dpkg --print-architecture) signed-by=/usr/share/keyrings/docker-archive-keyring.gpg] https://download.docker.com/linux/debian $(lsb_release -cs) stable" > /etc/apt/sources.list.d/docker.list
+    apt-get update
+    apt-get install -y docker-ce docker-ce-cli containerd.io
+
+elif [ "$OS_TYPE" == "rhel" ]; then
+    echo "Sabor detectado: RHEL/AlmaLinux"
+    yum install -y yum-utils
+    yum-config-manager --add-repo https://download.docker.com/linux/centos/docker-ce.repo
+    yum install -y docker-ce docker-ce-cli containerd.io
+    systemctl enable --now docker
+fi
+'
+
+# 3. Configurar Insecure Registry
+# Nota: Só tentará configurar/reiniciar se o binário do docker existir
+if [ -x "$(command -v docker)" ]; then
+    echo "[INFO] Configurando Insecure Registry e permissões..."
+    mkdir -p /etc/docker
+    cat <<EOF > /etc/docker/daemon.json
+{
+  "insecure-registries": ["192.168.200.50:5000"],
+  "exec-opts": ["native.cgroupdriver=systemd"]
+}
+EOF
+
+    systemctl restart docker
+    usermod -aG docker vagrant
+
+    # 4. Se for a máquina Registry, rodar o container de registro
+    if [[ "$(hostname)" == *"registry"* ]]; then
+        if ! docker ps -a | grep -q "local-registry"; then
+            echo "Configurando Container Registry..."
+            docker run -d -p 5000:5000 --restart=always --name local-registry registry:2
+        fi
+    fi
+else
+    echo "[WARN] Docker não encontrado. Pulando configurações do daemon.json e Registry."
+fi
+
+echo "--- Provisionamento concluído! ---"

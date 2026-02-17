@@ -1,7 +1,322 @@
 
-# Capítulo 01 - Fundamentos
+# Capítulo 01 - Fundamentos e Instalação
 
-## O que é o Docker
+## Virtualização
+
+A virtualização é uma tecnologia que permite a um único computador físico **(host)** executar múltiplas máquinas virtuais **(VMs)**, cada uma com seu próprio sistema operacional **(guest)**.
+
+Essas VMs compartilham os recursos físicos — CPU, memória, disco e rede — do host, funcionando como sistemas independentes dentro de um ambiente isolado. Em outras palavras, a virtualização torna possível executar **sistemas operacionais dentro de sistemas operacionais**.
+Cada máquina virtual roda como um processo de usuário no sistema host, gerenciado pelo hipervisor.
+
+**Essa abordagem oferece inúmeras vantagens:**
+
+- Permite testar e validar configurações de software de forma segura e reversível;
+- Facilita o ensino e aprendizado de administração de sistemas;
+- Possibilita execução de softwares legados em sistemas modernos;
+- Aumenta a eficiência e aproveitamento do hardware.
+
+No contexto do Linux, a virtualização possui um papel estratégico. Diferente de soluções externas ou proprietárias, o Linux integra nativamente tecnologias de virtualização diretamente no kernel, oferecendo alto desempenho, segurança e estabilidade. Ferramentas como o `KVM (Kernel-based Virtual Machine)` transformam o próprio kernel Linux em um hipervisor, permitindo a execução de máquinas virtuais com desempenho próximo ao hardware real.
+
+###  O que é um Hipervisor
+
+O hipervisor é o componente que gerencia a execução das máquinas virtuais, controlando o acesso delas aos recursos físicos do host.
+Ele cria e mantém o isolamento entre os guests, garantindo que cada um funcione de forma segura e independente.
+
+**xistem três principais abordagens de virtualização:**
+
+### Virtualização Completa (Bare-metal)
+
+A virtualização Bare-Metal (também conhecida como Tipo 1) é a forma mais pura e eficiente de virtualização. O termo "Bare-Metal" (metal exposto) refere-se ao fato de que o software de virtualização — o Hipervisor — é instalado diretamente sobre o hardware físico, sem a necessidade de um sistema operacional convencional (como Windows ou macOS) por baixo. O hipervisor interage diretamente com o hardware do host, oferecendo alto desempenho e baixo overhead.
+
+> **Exemplos:** `KVM`, `VMware ESXi`, `Microsoft Hyper-V`, `Proxmox`.
+
+### Paravirtualização
+
+Enquanto a virtualização Bare-Metal (Full Virtualization) foca em simular o hardware completo para que a máquina virtual (VM) não saiba que está sendo virtualizada, a Paravirtualização (PV) adota uma abordagem de "colaboração".
+
+Na paravirtualização, o sistema operacional convidado (Guest) sabe que está rodando em um hipervisor e é modificado para trabalhar em conjunto com ele.
+
+Na paravirtualização, as instruções privilegiadas do sistema operacional convidado são substituídas por Hypercalls.
+- **Hypercalls:** São chamadas diretas ao Hipervisor. Em vez de a VM tentar "tomar o controle" do hardware, ela pede educadamente ao hipervisor: "Por favor, execute esta tarefa de escrita no disco para mim".
+
+> **Exemplos:** `Xen`, `VirtualBox` (em modo paravirtualizado).
+
+### Virtualização por Software (ou Emulação)
+
+A Virtualização por Software, frequentemente chamada de Emulação, é o nível mais básico e, ao mesmo tempo, o mais versátil de virtualização. Diferente do KVM (que usa o hardware) ou da Paravirtualização (que exige um Kernel modificado), aqui o software simula cada componente de um computador físico. Por outro lado, é o método mais lento devido à tradução binária constante.
+
+> **Exemplos:** `QEMU puro`, `VirtualBox`, `VMware Workstation`.
+
+### Por que Utilizar a Virtualização
+
+A virtualização é uma tecnologia essencial tanto para laboratórios de estudo, quanto para ambientes corporativos.
+
+**Seus principais benefícios incluem:**
+
+- **Melhor aproveitamento de recursos:** múltiplos servidores podem compartilhar o mesmo hardware físico.
+- **Redução de custos operacionais:** menor consumo de energia, refrigeração e espaço físico.
+- **Facilidade de manutenção:** snapshots, clonagem e migração reduzem o tempo de recuperação.
+- **Isolamento e segurança:** falhas em uma VM não afetam as demais.
+- **Flexibilidade e escalabilidade:** criação rápida de novos servidores conforme a necessidade.
+
+### Soluções
+
+Várias empresas oferecem soluções de virtualização que abrangem tarefas específicas de data center ou cenários de virtualização de desktop focados no usuário final. Exemplos mais conhecidos incluem o VMware, que se especializa em virtualização de servidor, área de trabalho, rede e armazenamento. O Citrix, que tem um nicho em virtualização de aplicativos, mas também oferece soluções de virtualização de servidor e de desktop virtual. A Microsoft, cuja solução de virtualização Hyper-V é fornecida com o Windows e foca em versões virtuais de computadores de servidor e desktop.
+
+### Tipos de serviços virtualizado
+
+Até esse ponto discutimos a virtualização de servidor, mas muitos outros elementos da infraestrutura de TI podem ser virtualizados para oferecer vantagens significativas aos gerentes de TI (em particular) e à empresa como um todo. 
+
+- Virtualização da área de trabalho
+- Virtualização de rede
+- Virtualização de armazenamento
+- Virtualização de dados
+- Virtualização de aplicativos
+- Virtualização de data center
+- Virtualização de CPU
+- Virtualização de GPU
+- Virtualização de Linux
+- Virtualização de cloud
+
+### Hypervisor: O Coração da Virtualização
+
+O `hipervisor` é a camada que intermedia o acesso ao hardware físico e fornece recursos às máquinas virtuais.
+
+**Ele é responsável por:**
+
+- Gerenciar o hardware físico (CPU, RAM, disco, rede)
+- Distribuir recursos entre as máquinas virtuais
+- Proteger o isolamento entre elas
+- Criar, executar, pausar, migrar e remover máquinas virtuais
+
+Existem dois tipos principais:
+
+#### Hypervisor Tipo 1 (Bare Metal)
+
+**Um hipervisor tipo 1** é executado diretamente no hardware físico do computador, interagindo diretamente com sua unidade central de processamento (CPU), memória e armazenamento físico. Por esse motivo, as pessoas também se referem aos hipervisores tipo 1 como hipervisores bare metal ou hipervisores nativos. Um hipervisor tipo 1 assume o lugar do sistema operacional host.
+
+Os hipervisores tipo 1 são altamente eficientes porque acessam diretamente o hardware físico. Esse recurso também aumenta sua segurança, pois não há nada entre eles e a CPU que um invasor possa comprometer. No entanto, um hipervisor tipo 1 geralmente exige uma máquina de gerenciamento separada para administrar diversas VMs e controlar o hardware do host.
+
+#### Hypervisor Tipo 2 (Hospedado)
+
+**Um hypervisor tipo 2** (também conhecido como hipervisor incorporado ou hospedado) não é executado diretamente no hardware subjacente. Em vez disso, é executado como uma aplicação em um SO.
+
+Os hipervisores tipo 2 raramente aparecem em ambientes baseados em servidores. Em vez disso, são adequados para usuários individuais de PCs que precisam executar sistemas operacionais diferentes. Por exemplo, engenheiros, profissionais de segurança que analisam malware e usuários corporativos que precisam acessar aplicações disponíveis somente em outras plataformas de software.
+
+Os hipervisores tipo 2 muitas vezes apresentam toolkits adicionais para os usuários instalarem no SO convidado. Essas ferramentas oferecem conexões aprimoradas entre o convidado e o SO host, normalmente possibilitando que o usuário corte e cole entre os dois ou acesse arquivos e pastas do SO host a partir da máquina virtual convidada.
+
+Um hipervisor tipo 2 possibilita o acesso rápido e fácil a um SO convidado alternativo juntamente com o sistema principal em execução no sistema host. Esse recurso possibilita produtividade para o usuário final. Um consumidor pode utilizá-lo para acessar suas ferramentas de desenvolvimento favoritas baseadas em Linux enquanto utiliza um sistema de ditado de voz disponível somente no Windows, por exemplo.
+
+No entanto, um hipervisor tipo 2, ao acessar recursos de computação, memória e rede por meio do SO host, introduz problemas de latência que podem afetar o desempenho. Ele também introduz possíveis riscos de segurança se um invasor comprometer o SO host, pois ele poderá manipular qualquer SO convidado em execução no hipervisor tipo 2.
+
+### Hipervisores no mercado
+
+Há atualmente muitos hipervisores no mercado. Veja a seguir algumas das principais soluções de propriedade de fornecedores.
+
+- **VMware ESXi:** O VMware ESXi (Elastic Sky X Integrated) é um hipervisor tipo 1 (ou bare metal) dedicado à virtualização de servidores no data center. O ESXi gerencia coleções de virtual machines da VMware.
+- **VMware Workstation Pro:** Esse hipervisor é compatível com desktops e notebooks que executam sistemas operacionais Windows e Linux.
+- **VMware Fusion Pro.** Também para usuários de desktops e notebooks, esse hipervisor é a oferta da empresa voltada para o MacOS, que permite que os usuários de Mac executem uma grande variedade de sistemas operacionais convidados. O VMware Fusion Pro é gratuito para uso pessoal e pago para uso comercial.
+
+> **Observação:** a VMware descontinuou o Workstation Player e o VMware Fusion Player desde o início do VMware Workstation Pro e do Fusion Pro.3
+
+- **Oracle VM VirtualBox:** O VirtualBox é um hipervisor tipo 2 que é executado nos sistemas operacionais Linux, Mac OS e Windows.
+- **Parallels Desktop:** O Parallels Desktop é uma tecnologia de hipervisor que permite aos usuários executar sistemas operacionais (como Linux ou Windows) e outros aplicativos em um Mac.
+- **Microsoft Hyper-V:** O Hyper-V é o hipervisor da Microsoft projetado para uso em sistemas Windows
+- **Citrix Hypervisor:** O Citrix Hypervisor (antigo Xen Server do projeto de código aberto Xen) é um hipervisor comercial tipo 1 compatível com os sistemas operacionais Linux e Windows.
+- **Hipervisores de código aberto:** As tecnologias de hipervisor de código aberto oferecem boa relação custo-benefício, opções de personalização e forte suporte da comunidade. Os hipervisores de código aberto mais populares incluem os seguintes.
+- **Xen Hypervisor:** Esse hipervisor tipo 1 de código aberto é executado em arquiteturas Intel e ARM. O Xen é compatível com diversos tipos de virtualização, incluindo ambientes com assistência de hardware usando Intel VT e AMD-V. 
+- **Linux KVM (virtual machine baseada no kernel):** O KVM é um hipervisor tipo 1 baseado em Linux que pode ser adicionado à maioria dos sistemas operacionais Linux, inclusive Ubuntu, SUSE e Red Hat Enterprise Linux (RHEL).
+- **Red Hat OpenShift Virtualization:** O Red Hat OpenShift Virtualization é baseado no KubeVirt, um projeto de código aberto que possibilita executar VMs em uma plataforma de contêineres gerenciada do Kubernetes. O KubeVirt oferece virtualização nativa de contêineres usando uma KVM dentro de um contêiner Kubernetes.
+
+> Cada sistema virtualizado é chamado de máquina virtual (VM) ou hóspede, e comporta-se como um computador real — com BIOS, controladores, disco, interfaces de rede e drivers próprios.
+
+### Máquinas virtuais (VMs)
+
+As máquinas virtuais (VMs) são ambientes virtuais que simulam um computador físico em forma de software. Elas normalmente compreendem vários arquivos contendo a configuração da VM, o armazenamento para o disco rígido virtual e algumas capturas instantâneas da VM que preservam o seu estado em um determinado ponto no tempo.
+
+### Recuperação de Desastres e Alta Disponibilidade
+
+A recuperação de desastres é um dos pontos fortes da virtualização.
+Em caso de falha grave no sistema, é possível restaurar rapidamente uma VM a partir de um snapshot ou migrá-la para outro host.
+
+Além disso, como cada VM é totalmente independente, o tempo de inatividade de um servidor não afeta os demais — um fator crítico em ambientes de produção.
+
+Para fechar o entendimento necessário para a LPI, a virtualização pode ser resumida como a tecnologia que permite criar múltiplos recursos computacionais simulados a partir de um único hardware físico. Ela é o pilar que sustenta o Cloud Computing e a infraestrutura moderna.
+
+## KVM — Kernel-based Virtual Machine
+
+O **KVM (Kernel-based Virtual Machine)** ou **máquina virtual baseada em Kernel** é a solução nativa de virtualização completa do Linux, integrada diretamente ao kernel desde a versão `2.6.20`. Ele transforma o Linux em um hipervisor de alto desempenho, capaz de executar múltiplos sistemas operacionais simultaneamente — incluindo Linux, Windows e BSD.
+
+O KVM utiliza o QEMU (Quick Emulator) como mecanismo de emulação de hardware, oferecendo um ambiente flexível e altamente eficiente.
+
+### Principais Recursos do KVM
+
+- **Overcommitting:** permite alocar mais recursos virtuais (CPU/RAM) do que os disponíveis fisicamente, otimizando a utilização do hardware.
+- **KSM (Kernel Same-page Merging):** permite que diferentes VMs compartilhem páginas de memória idênticas, reduzindo o consumo de RAM.
+- **QEMU Guest Agent:** agente instalado no sistema convidado que permite controle e monitoramento detalhado pela máquina host.
+- **Compatibilidade com Hyper-V:** o KVM implementa diversas funções do Hyper-V, otimizando o desempenho de VMs Windows.
+
+### Ferramentas de Gerenciamento: Libvirt e Ecosistema
+
+Uma ferramenta de gerenciamento de virtualização é útil para monitorar as VMs quando várias delas estão sendo executadas. Algumas ferramentas de gerenciamento de VM são executadas na linha de comando, outras oferecem interfaces de usuário gráficas (GUIs), e outras são criadas para gerenciar VMs em grandes ambientes empresariais. Confira algumas soluções comuns de gerenciamento de virtualização para a KVM.
+
+O `libvirt` `virsh` é uma ferramenta de interface de linha de comando (CLI) para gerenciar o hypervisor e as máquinas virtuais convidadas, é a camada de gerenciamento da virtualização no Linux. 
+
+O comando `virsh` pode ser usado em modo somente leitura por usuários sem privilégios ou para administração completa por usuários com acesso `root`. Além disso, `virsh` é a principal interface de gerenciamento para domínios, convidados e pode ser usada para `criar`, `pausar`, `encerrar` domínios, bem como `listar` domínios atuais, além de entrar em um shell de virtualização. Esta ferramenta é instalada como parte do pacote libvirt-client.
+
+Ele fornece uma API unificada e independente de hipervisor, permitindo criar, modificar e controlar VMs de forma segura.
+
+**Principais Ferramentas:**
+
+- **virsh:** ferramenta de linha de comando (CLI) baseada em libvirt. Permite criar, pausar, listar, iniciar e encerrar máquinas virtuais.
+- **virt-manager:** ferramenta gráfica leve e intuitiva, ideal para gerenciar VMs localmente, criar novas instâncias e acessar consoles gráficos.
+- **Consoles web:** os administradores podem gerenciar VMs usando interfaces baseadas na web. Por exemplo, o Cockpit oferece uma solução para os usuários gerenciarem VMs em uma interface web. O Red Hat Enterprise Linux tem um plug-in de console web voltado à virtualização.
+- **KubeVirt:** o  `KubeVirt` é uma solução para gerenciar grandes quantidades de VMs em um ambiente do Kubernetes. Nesse local, as VMs podem ser gerenciadas junto às aplicações em container. O Kubevirt oferece a base para o Red Hat OpenShift® Virtualization.
+- **virt-install:** utilitário em linha de comando para provisionar novas VMs de forma interativa ou automatizada, suportando mídias locais e remotas (HTTP, FTP, NFS).
+
+Essas ferramentas permitem o gerenciamento completo do ciclo de vida das máquinas virtuais, incluindo criação, migração, monitoramento de desempenho e controle de recursos.
+
+### KVM vs. VMware
+
+A VMware oferece um conjunto completo de produtos de virtualização, incluindo o ESXi (um hipervisor de tipo 1) e o vSphere. Uma das principais diferenças em relação à VMware reside nos seus modelos de licenciamento. Sendo open source, o KVM não tem custos de licenciamento para o hipervisor em si, ao passo que os produtos da VMware normalmente requerem licenças comerciais.
+
+O ecossistema maduro e o conjunto abrangente de funcionalidades da VMware, incluindo ferramentas de gestão avançadas, podem ser vantajosos para grandes empresas com necessidades de virtualização complexas. Contudo, isso acarreta um custo superior.
+
+O KVM, com o seu conjunto crescente de funcionalidades e um desempenho robusto, é uma alternativa interessante, especialmente para as organizações que procuram uma solução económica e flexível. Frequentemente, a escolha depende do orçamento, das funcionalidades pretendidas e do nível de suporte necessário.
+
+### KVM vs. Hyper-V
+
+O Hyper-V é a plataforma de virtualização da Microsoft, perfeitamente integrada no sistema operativo Windows Server. Tal como o KVM, o Hyper-V é um hipervisor de tipo 1 (executado diretamente sobre o hardware). Uma diferença fundamental reside no ecossistema: o KVM é nativo do Linux, enquanto o Hyper-V é a base do ecossistema Windows. Isto faz do Hyper-V uma escolha natural para as organizações que investem fortemente nas tecnologias da Microsoft.
+
+O KVM, por outro lado, oferece uma maior flexibilidade em termos de sistemas operativos convidados (guests) e beneficia de uma comunidade open source vibrante. Do ponto de vista do desempenho, ambas as plataformas oferecem excelentes resultados, embora os ensaios de referência (benchmarks) específicos possam variar em função da carga de trabalho e do tipo de serviços alojados.
+
+### Escolher a plataforma de virtualização adequada
+
+O custo é invariavelmente um fator determinante, e a natureza open source do KVM torna-o uma opção altamente rentável. Contudo, devem ser avaliadas as funcionalidades específicas exigidas pelo negócio, tais como a migração em direto (live migration), a gestão de armazenamento e a alta disponibilidade (HA).
+
+As métricas de desempenho e o seu alinhamento com os requisitos da carga de trabalho (workload) são fundamentais. Adicionalmente, deve-se ponderar a maturidade do ecossistema, a disponibilidade de recursos de suporte e a dimensão da comunidade. Por fim, a integração na infraestrutura informática existente e a compatibilidade com o conjunto de ferramentas de gestão atuais são aspetos cruciais para garantir a continuidade do negócio.
+
+### Resumo do Cenário de Laboratório
+
+Compreender o conceito de virtualização e o funcionamento do KVM é fundamental para montar um ambiente de laboratório eficiente. O cenário apresentado neste capítulo servirá de base para os próximos, onde serão implementados diversos serviços de rede — tais como DNS, DHCP, HTTP, Firewall, Proxy e Controlador de Domínio — sobre as distribuições Debian 13, Rocky Linux e Ubuntu Server LTS.
+
+A partir deste ponto, cada máquina virtual (VM) criada será configurada como parte de uma infraestrutura de rede simulada, refletindo as práticas reais de administração de servidores corporativos GNU/Linux. Todo este percurso está alinhado com os requisitos da trilha de certificação LPI.
+
+## Instalação e Configuração do KVM no Debian GNU/Linux
+
+1. **Verificação de Requisitos do Sistema**
+
+Antes de instalar o KVM (Kernel-based Virtual Machine), é fundamental confirmar se o hardware e o sistema operacional host oferecem suporte à virtualização. A maioria dos processadores modernos da Intel e AMD já possui esse recurso integrado, identificado pelas extensões VMX (Intel VT-x) ou SVM (AMD-V).
+
+**Para verificar o suporte, execute:**
+
+`grep -E --color '(vmx|svm)' /proc/cpuinfo`
+
+![Amostra das flags do sistema](imagens/3.png)
+
+Se o comando retornar a tag `vmx` ou `svm`, significa que a CPU suporta virtualização por hardware — requisito essencial para o KVM.
+
+> **Boa prática:** Certifique-se de que a virtualização também esteja ativada na `BIOS/UEFI` do sistema. Sem essa opção habilitada, o KVM não conseguirá inicializar corretamente, mesmo que o processador ofereça suporte.
+
+**Atualizando o Sistema**
+
+Antes de iniciar a instalação, é recomendável atualizar a base de pacotes e garantir que o sistema está com as versões mais recentes dos componentes.
+
+![Atualização](imangens/atualizacao.png)
+
+Essa prática previne conflitos de dependência e garante maior estabilidade e segurança ao ambiente.
+
+> **Dica:** Após uma atualização completa, reinicie o sistema (sudo reboot) para garantir que todos os módulos e kernels atualizados sejam carregados.
+
+**Instalação dos Pacotes Necessários**
+
+A instalação do KVM no Debian pode ser feita em diferentes níveis. Para este laboratório, faremos uma instalação completa e otimizada, que inclui o hipervisor, ferramentas de gerenciamento, bibliotecas e utilitários de rede.
+
+| Pacote                    | Função                                     | Detalhes técnicos                                                                                                                         |
+| ------------------------- | ------------------------------------------ | ----------------------------------------------------------------------------------------------------------------------------------------- |
+| **qemu-kvm**              | Ativa virtualização KVM                    | Permite que o QEMU use aceleração por hardware (Intel VT-x / AMD-V). Sem ele, as VMs rodam sem aceleração.                                |
+| **libvirt-daemon-system** | Serviço principal do libvirt               | Fornece o daemon `libvirtd` e configurações padrão para gerenciar hipervisores como KVM. Necessário para gerir VMs de forma centralizada. |
+| **libvirt-clients**       | Ferramentas de linha de comando do libvirt | Inclui comandos como `virsh`, `virt-clone`, `virt-top`. Permite interagir com VMs via terminal.                                           |
+| **libvirt-daemon**        | Daemon que implementa libvirt              | Responsável pela comunicação entre o libvirt e o hipervisor KVM/QEMU. Também coordena redes, storage pools e dispositivos.                |
+| **virtinst**              | Ferramentas para criação de VMs            | Inclui `virt-install` e `virt-clone`. Permite criar máquinas virtuais via CLI usando parâmetros detalhados.                               |
+| **bridge-utils**          | Criação de bridges de rede                 | Pacote que fornece `brctl` para criar bridges, permitindo que VMs tenham acesso direto à rede física.                                     |
+| **libosinfo-bin**         | Base de dados de sistemas operacionais     | Inclui `osinfo-query`. Fornece informações de sistemas operativos para criação automatizada de VMs (ex.: nome, drivers, requisitos).      |
+| **libguestfs-tools**      | Manipulação de discos de VMs               | Inclui ferramentas como `guestmount`, `virt-edit`, `virt-rescue`. Permite editar discos de VMs sem inicializá-las.                        |
+| **virt-manager**          | Interface gráfica para KVM                 | Ferramenta GUI para gerenciar VMs, redes, snapshots, discos, CPU, RAM. Ideal para administração visual.                                   |
+
+![Instalação dos pacotes kvm](imagens/4.png)
+
+**Durante a instalação, o apt exibirá:**
+
+Pacotes que serão instalados — dependências e bibliotecas adicionais.
+
+1. **Pacotes sugeridos** — opcionais, mas úteis em alguns casos (como virt-viewer), e resumo do download e uso de disco — útil para controle de recursos.
+
+![Instalação kvm2](imagens/5.png)
+
+2. **O gerenciador, vai na lista de repositório baixar os arquivos**
+
+![Baixando os arquivos](imagens/6.png)
+
+3. **Apos baixar o gerenciador, seleciona e prepara os pacotes**
+
+![Seleção dos arquivos](imagens/install3.png)
+
+4. **Finalmente instala os pacotes baixados**
+
+![Set-up dos pacotes](imagens/10.png)
+
+Após a conclusão, o sistema estará pronto para hospedar máquinas virtuais.
+
+**Verificação da Instalação**
+
+Verifique se o serviço libvirtd está ativo e rodando com os seguintes comandos: `systemctl is-active libvirtd` e `systemctl status libvirtd`
+
+![Confirmação do serviço](/imagens/12.png)
+
+Para garantir que o serviço inicie automaticamente junto ao sistema:
+
+![Confirmação do serviço](/imagens/install4.png)
+
+> **Observação:** Esse comando evita o erro comum `default network is not active` ao iniciar o virt-manager.
+
+**Gerenciamento de Permissões**
+
+Por padrão, o `virt-manager` solicita autenticação de root ao ser iniciado.
+
+![Autenticação do virt-mager](imagens/14.png)
+
+Para evitar ter que inserir a senha sempre, você pode adicionar seu usuário aos grupos libvirt e kvm: `usermod -aG libvirt chalambua` e `usermod -aG kvm chalambua`
+
+```bash
+root@lpc:~# usermod -aG libvirt chalambua
+root@lpc:~# usermod -aG kvm chalambua
+```
+
+Depois, encerre a sessão e faça login novamente para que as permissões sejam aplicadas.
+
+Com o comando `id`, podemos verificar quais grupos o usuário `chalambua` pertence.
+
+![Grupos adicionados](imagens/install5.png)
+
+> **Nota de segurança:** Em ambientes de produção, não é recomendado conceder permissões administrativas amplas sem necessidade. Neste material, manteremos o uso do modo root apenas quando estritamente necessário.
+
+**Interface Gráfica: Virt-Manager**
+
+Após a instalação, o virt-manager pode ser iniciado pelo menu do sistema ou via terminal:
+
+![Menu do de pesquisa](imagens/15.png)
+
+`virt-manager`
+
+Na primeira execução, o programa pode solicitar autenticação.
+Após o login, o gerenciador mostrará a conexão com o hypervisor `QEMU/KVM` e permitirá criar e gerenciar máquinas virtuais.
+
+![Virt-manager autenticado](imagens/16.png)
+
+> **Dica profissional:** Utilize a aba “Ajuda → Sobre” para confirmar a versão do virt-manager instalada. Isso ajuda na compatibilidade com futuras atualizações de libvirt e qemu.
+
+### O que é o Docker
 
 **Docker** é uma plataforma Open Source escrita em Go (Linguagem de programação em alta performance desenvolvida pela Google) que ajuda na criação e a administração de ambientes isolados. Isso permite que as aplicações partilhem o kernel do SO anfitrião em vez de executarem um SO convidado. Este design torna os containers Docker leves, rápidos e portáteis, mantendo-os isolados uns dos outros
 
@@ -9,7 +324,7 @@ Com a utilização do Docker podemos gerenciar toda a infraestutura de uma aplic
 
 O Docker trabalha com uma virtualização a nível do sistema operacional, onde o mesmo utiliza de recursos como o kernel do sistema hospedeiro para executar seus containers. Diferente do modelo tradicional de Máquinas Virtuais, o Docker não necessita da instalação de um sistema operacional por completo, e sim apenas dos arquivos necessários para a aplicação ser executada. 
 
-Então o docker já trás as seguintes vantagens:
+**Então o docker já trás as seguintes vantagens:**
 
 * Escrito na linguagem de programação Go.
 * Suporta instalações Windows, macOS e Linux (o Docker Engine é executado nativamente no Linux).
@@ -20,13 +335,13 @@ Embora o Docker e as máquinas virtuais tenham um propósito semelhante, seu des
 
 A principal diferença é que os containers do Docker compartilham o sistema operacional do host, enquanto as máquinas virtuais também têm um sistema operacional convidado sendo executado no sistema host, (virtual box,vmware, etc...). Esse método de operação afeta o desempenho, as necessidades de hardware e o suporte do SO. Confira a tabela abaixo para uma comparação detalhada.
 
-## Tabela de comparação docker Vs maquinas virtuais
+### Tabela de comparação docker Vs maquinas virtuais
 
 ![Weaveworks - VM x Containers](../pic/docker_vs_vm.png)
 
 ## Por que usar Docker?
 
-* Antes do Docker:
+- Antes do Docker:
 
 A implantação de aplicativos entre ambientes era muitas vezes difícil, dependências, configurações e variações de sistema operacional causavam dores de cabeça do tipo **“funciona aqui, mas não lá”**.
 
@@ -40,13 +355,13 @@ Existem diversas engines e runtimes de containers e até é possível utilizar c
 
 A seguir estão alguns dos principais componentes do Docker:
 
-* **Docker Engine**: O Docker Engine tem um daemon docker como parte central, que lida com a criação e o gerenciamento de contêineres.
-* **Imagem do Docker**: A imagem Docker é um modelo só de leitura que é utilizado para criar contentores, contendo o código da aplicação e as dependências.
-* **Docker Hub**: É um repositório baseado na nuvem que é utilizado para encontrar e partilhar as imagens de contentores.
-* **Dockerfile**: É um ficheiro que descreve os passos para criar uma imagem rapidamente.
-* **Docker Registry** : É um sistema de distribuição de armazenamento para imagens Docker, onde é possível armazenar as imagens nos modos público e privado.
+- **Docker Engine:** O Docker Engine tem um daemon docker como parte central, que lida com a criação e o gerenciamento de contêineres.
+- **Imagem do Docker:** A imagem Docker é um modelo só de leitura que é utilizado para criar contentores, contendo o código da aplicação e as dependências.
+- **Docker Hub:** É um repositório baseado na nuvem que é utilizado para encontrar e partilhar as imagens de contentores.
+- **Dockerfile:** É um ficheiro que descreve os passos para criar uma imagem rapidamente.
+- **Docker Registry:** É um sistema de distribuição de armazenamento para imagens Docker, onde é possível armazenar as imagens nos modos público e privado.
 
-#### Docker Engine
+### Docker Engine
 
 O Docker Engine é o componente principal que permite que o Docker execute contêineres em um sistema. Segue uma arquitetura cliente-servidor e é responsável pela criação, execução e gestão de contentores Docker.
 
@@ -62,7 +377,7 @@ O Daemon recebe estes comandos e executa operações de contentores.
 A API REST é a interface que permite esta comunicação.
 Em suma, o Docker Engine é o tempo de execução que torna a contentorização possível, ligando o cliente Docker ao daemon para construir e gerir contentores de forma eficiente.
 
-#### Dockerfile
+### Dockerfile
 
 O Dockerfile usa DSL (Domain Specific Language) e contém instruções para gerar uma imagem Docker. O Dockerfile definirá os processos para produzir rapidamente uma imagem. Ao criar a sua aplicação, deve criar um Dockerfile por ordem, uma vez que o daemon do Docker executa todas as instruções de cima para baixo.
 
@@ -74,17 +389,17 @@ O Dockerfile é o código-fonte da imagem. (O daemon do Docker, muitas vezes ref
 serem executados, ajudam a montar uma imagem Docker. A imagem Docker é 
 criada usando um Dockerfile.
 
-#### Imagem Docker
+### Imagem Docker
 
 Uma imagem Docker é um ficheiro composto por várias camadas que contém as instruções para construir e executar um contentor Docker. Funciona como um pacote executável que inclui tudo o que é necessário para executar uma aplicação - código, tempo de execução, bibliotecas, variáveis de ambiente e configurações.
 
-#### Como funciona:
+### Como funciona:
 
-* A imagem define como um containers deve ser criado.
-* Especifica quais componentes de software serão executados e como eles são configurados.
-* Uma vez que uma imagem é executada, ela se torna um Docker Container.
+- A imagem define como um containers deve ser criado.
+- Especifica quais componentes de software serão executados e como eles são configurados.
+- Uma vez que uma imagem é executada, ela se torna um Docker Container.
 
-Relação com Containers:
+**Relação com Containers:**
 
 1. Imagem do Docker → Blueprint (estático, somente leitura).
 2. Docker Container → Instância de execução dessa imagem (dinâmica, executável)
@@ -101,13 +416,13 @@ mais sobre o funcionamento do Docker, consulte arquitetura do docker.
 
 [Arquitetura Docker](../pic/docker_architecture.png)
 
-* **CLI do Docker**: Interface de linha de comandos para interagir com o Docker
+- **CLI do Docker**: Interface de linha de comandos para interagir com o Docker
 Comandos comuns: docker run, docker build, docker pull
-* **API Rest do Docker**: API HTTP utilizada pela CLI e outras ferramentas
+- **API Rest do Docker**: API HTTP utilizada pela CLI e outras ferramentas
 Facilita a comunicação com o daemon do Docker
-* **Daemon do Docker**: Trata de imagens, contentores, redes e volume
+- **Daemon do Docker**: Trata de imagens, contentores, redes e volume
 Serviço principal que gere objectos do Docker
-* **Tempo de execução de alto nível**: Gere as operações do ciclo de vida dos containers. As tarefas incluem criar, iniciar, parar e eliminar contentores
+- **Tempo de execução de alto nível**: Gere as operações do ciclo de vida dos containers. As tarefas incluem criar, iniciar, parar e eliminar contentores
 
 ## O que é um container
 
@@ -123,7 +438,7 @@ Podemos dizer também que um container é a unidade mínima computacional do Doc
 
 ![Container](../pic/docker.png)
 
-#### Docker Container
+### Docker Container
 
 Um Docker Container é uma instância leve e executável de uma imagem Docker. Ele empacota o código do aplicativo junto com todas as suas dependências e o executa em um ambiente isolado. Os contentores permitem que as aplicações sejam executadas de forma rápida e consistente em diferentes ambientes - seja no computador portátil de um programador, em servidores de teste ou em produção.
 
@@ -132,12 +447,12 @@ Ele é executado como um processo isolado no computador host, mas compartilha o 
 
 Por exemplo: suponha que existe uma imagem do SO Ubuntu com o NGINX SERVER e que esta imagem é executada com o comando docker run, será criado um contentor e o NGINX SERVER será executado no SO Ubuntu.
 
-Relação com imagens:
+**Relação com imagens:**
 
-Imagem do Docker = Blueprint (estático, somente leitura).
-Docker Container = instância viva desse blueprint (dinâmico, executável)
+- Imagem do Docker = Blueprint (estático, somente leitura).
+- Docker Container = instância viva desse blueprint (dinâmico, executável)
 
-#### O que é o Docker Hub?
+### O que é o Docker Hub?
 
 O Docker Hub é um serviço de repositório e é um serviço baseado em nuvem onde as pessoas enviam suas imagens de contêineres Docker e também puxam as imagens de contêineres Docker do Docker Hub a qualquer momento ou em qualquer lugar através da Internet.
 
@@ -145,7 +460,7 @@ De um modo geral, facilita a procura e a reutilização de imagens. Fornece func
 
 A equipa DevOps utiliza principalmente o Docker Hub. É uma ferramenta de código aberto e está disponível gratuitamente para todos os sistemas operativos. É como um armazenamento onde guardamos as imagens e as extraímos quando necessário. Quando uma pessoa quer empurrar/puxar imagens do Docker Hub, ela deve ter um conhecimento básico do Docker. Vamos discutir os requisitos da ferramenta Docker.
 
-#### Comandos Docker
+### Comandos Docker
 
 Através da introdução dos comandos essenciais do docker, o docker tornou-se um software poderoso na racionalização do processo de gestão de contentores. Ele ajuda a garantir um desenvolvimento contínuo e fluxos de trabalho de implantação. 
 
@@ -160,20 +475,20 @@ A seguir estão alguns dos comandos do docker que são usados comumente:
 | **docker start**     | Reinicia contêineres parados, retomando suas operações do estado anterior.                   |
 | **docker login**     | Permite autenticar-se no registro Docker, habilitando o acesso a repositórios privados.      |
 
-#### Docker Engine
+### Docker Engine
 
 O software que aloja os contentores chama-se Docker Engine. O Docker Engine é uma aplicação baseada em cliente-servidor. O motor do docker tem 3 componentes principais:
 
-* **Servidor**: É responsável pela criação e gestão de imagens Docker, contentores, redes e volumes no Docker. É referido como um processo daemon.
-* **API REST**: especifica a forma como as aplicações podem interagir com o servidor e dá-lhe instruções sobre o que fazer.
-* **Cliente**: O cliente é uma interface de linha de comando (CLI) do Docker, que nos permite interagir com o Docker usando os comandos do Docker.
+- **Servidor**: É responsável pela criação e gestão de imagens Docker, contentores, redes e volumes no Docker. É referido como um processo daemon.
+- **API REST**: especifica a forma como as aplicações podem interagir com o servidor e dá-lhe instruções sobre o que fazer.
+- **Cliente**: O cliente é uma interface de linha de comando (CLI) do Docker, que nos permite interagir com o Docker usando os comandos do Docker.
 
 ## Versões
 
 O Docker possui basicamente duas versões, a `versão da comunidade (Community Edition)` e a `versão empresarial (Enterprise Edition)`.
 
-* **Community Edition (CE)**: Gratuito, open-source, usado por indivíduos, equipas de desenvolvimento, contribuidores de open-source.
-* **Enterprise Edition (EE)**: Paga, com melhorias de segurança, plugins/imagens certificados e suporte empresarial.
+1. **Community Edition (CE)**: Gratuito, open-source, usado por indivíduos, equipas de desenvolvimento, contribuidores de open-source.
+2. **Enterprise Edition (EE)**: Paga, com melhorias de segurança, plugins/imagens certificados e suporte empresarial.
 
 A maioria dos sistemas Docker em produção utiliza a versão Docker Community Edition. O licenciamento anual da versão Enterprise custa cerca de **US$750** por nó, o que torna o processo inviável para algumas empresas.
 
@@ -183,29 +498,29 @@ A versão Enterprise conta com recursos como o **UCP** (Universal Control Plane)
 
 A recomendação mínima para a versão Enterprise do Docker EE é:
 
-* 8GB de RAM para nós Managers
-* 4GB de RAM para nós Workers
-* 2vCPUs para nós Managers
-* 10GB de espaço em disco livre para a partição `/var` em nós Managers (Minimo de 6GB Recomendado)
-* 500MB de espaço em disco livre para a partição `/var` em nós workers
+- 8GB de RAM para nós Managers
+- 4GB de RAM para nós Workers
+- 2vCPUs para nós Managers
+- 10GB de espaço em disco livre para a partição `/var` em nós Managers (Minimo de 6GB Recomendado)
+- 500MB de espaço em disco livre para a partição `/var` em nós workers
 
 A recomendação para ambientes de produção do Docker EE é:
 
-* 16GB de RAM para nós Managers
-* 4vCPUs para nós Managers
-* 25 a 100GB de espaço livre em disco.
+- 16GB de RAM para nós Managers
+- 4vCPUs para nós Managers
+- 25 a 100GB de espaço livre em disco.
 
 ### Vantagens do Docker
 
-* **Portabilidade** - O principal atrativo do Docker é sua portabilidade. Ele permite que os usuários criem ou instalem um aplicativo complexo em uma máquina e tenham certeza de que funcionará nele. Os containers do Docker incluem tudo o que um aplicativo precisa com pouca ou nenhuma entrada do usuário.
-* **Automação** - Com a ajuda de cron jobs e containers Docker, os usuários podem automatizar seu trabalho facilmente. A automação ajuda os desenvolvedores a evitar tarefas tediosas e repetitivas, além de economizar tempo.
-* **Comunidade** - O Docker tem um canal dedicado no Slack, fórum da comunidade e milhares de colaboradores em sites de desenvolvedores como o StackOverflow. Além disso, existem mais de 9 milhões de imagens de container hospedadas no Docker Hub.
+- **Portabilidade** - O principal atrativo do Docker é sua portabilidade. Ele permite que os usuários criem ou instalem um aplicativo complexo em uma máquina e tenham certeza de que funcionará nele. Os containers do Docker incluem tudo o que um aplicativo precisa com pouca ou nenhuma entrada do usuário.
+- **Automação** - Com a ajuda de cron jobs e containers Docker, os usuários podem automatizar seu trabalho facilmente. A automação ajuda os desenvolvedores a evitar tarefas tediosas e repetitivas, além de economizar tempo.
+- **Comunidade** - O Docker tem um canal dedicado no Slack, fórum da comunidade e milhares de colaboradores em sites de desenvolvedores como o StackOverflow. Além disso, existem mais de 9 milhões de imagens de container hospedadas no Docker Hub.
 
-### Desvantagens do Docker
+## Desvantagens do Docker
 
-* **Velocidade** - mesmo que executar um aplicativo por meio de um container do Docker seja mais rápido do que em uma máquina virtual, ainda é consideravelmente mais lento do que executar aplicativos nativamente em um servidor físico.
-* **Difícil de usar** - O Docker não se destina a executar aplicativos que exijam uma interface gráfica do usuário (GUI). Isso significa que os usuários precisam estar familiarizados com a linha de comando e realizar todas as ações nela. A curva de aprendizado íngreme, as advertências específicas do sistema operacional e as atualizações frequentes tornam o domínio do Docker um desafio. Mesmo que você sinta que conhece o Docker de dentro para fora, ainda há uma orquestração a ser considerada, adicionando outro nível de complexidade.
-* **Segurança** - O Docker é executado no sistema operacional do host. Isso significa que qualquer software malicioso oculto em containers pode chegar à máquina host.
+- **Velocidade** - mesmo que executar um aplicativo por meio de um container do Docker seja mais rápido do que em uma máquina virtual, ainda é consideravelmente mais lento do que executar aplicativos nativamente em um servidor físico.
+- **Difícil de usar** - O Docker não se destina a executar aplicativos que exijam uma interface gráfica do usuário (GUI). Isso significa que os usuários precisam estar familiarizados com a linha de comando e realizar todas as ações nela. A curva de aprendizado íngreme, as advertências específicas do sistema operacional e as atualizações frequentes tornam o domínio do Docker um desafio. Mesmo que você sinta que conhece o Docker de dentro para fora, ainda há uma orquestração a ser considerada, adicionando outro nível de complexidade.
+- **Segurança** - O Docker é executado no sistema operacional do host. Isso significa que qualquer software malicioso oculto em containers pode chegar à máquina host.
 
 ## Instalação
 
@@ -239,9 +554,9 @@ Tudo pronto, vamos instalar o Docker em máquinas virtuais para que o estudo sej
 
 > Lembre-se de habilitar a virtualização `Intel VT-x` ou `AMD SVM` na UEFI/BIOS.
 
-### Instalando o Vagrant e Virt-manager 
+## Instalando o Vagrant e Virt-manager 
 
-#### O que é virt-manager
+### O que é virt-manager
 
 A aplicação virt-manager é uma interface de utilizador de ambiente de trabalho para gerir máquinas virtuais através da libvirt. Destina-se principalmente a máquinas virtuais KVM, mas também gere Xen e LXC (contentores Linux). Apresenta uma visão resumida dos domínios em execução, o seu desempenho em tempo real e estatísticas de utilização de recursos. Os assistentes permitem a criação de novos domínios e a configuração e ajuste da alocação de recursos e hardware virtual de um domínio. Um visualizador de cliente VNC e SPICE incorporado apresenta uma consola gráfica completa para o domínio convidado.
 
@@ -249,7 +564,7 @@ Para instalar o Virt-manager é muito simples siga os passos:
 
 Para Linux execute o programa de instalação de pacotes `sudo apt install` para sistemas debian-like ou `sudo yum install` para sistemas RHE.
 
-##### Instalação base debian:
+### Instalação base debian:
 
 ```bash
 paulo@devops  ~  sudo apt install qemu-kvm libvirt-daemon-system libvirt-daemon virtinst bridge-utils libosinfo-bin virt-manager
@@ -272,9 +587,7 @@ Do you want to continue? [Y/n]
 ```
 2.2. Para Windows, clique sob o instalador e avance até o final da instalação.
 
-### Instalação do vagrant pelo repositório
-
-#### O que é vagrant
+### O que é vagrant
 
 Vagrant é um software de código aberto para criar e manter ambientes de desenvolvimento virtuais portáteis, utilizando VirtualBox, KVM, Hyper-V, Docker containers, VMware, e AWS. Ele tenta simplificar a gerência de configuração de software das virtualizações para aumentar a produtividade do desenvolvimento.
 
@@ -284,7 +597,7 @@ Vagrant é um software de código aberto para criar e manter ambientes de desenv
 
 2. Para Windows, clique sob o instalador e avance até o final da instalação.
 
-2.1. Para Linux execute o programa de instalação de pacotes (`sudo dpkg -i <pacote>.deb` para sistemas debian-like ou `sudo rpm -i <pacote>.rpm`)
+2.1. Para Linux execute o programa de instalação de pacotes ( `sudo dpkg -i <pacote>.deb` para sistemas debian-like ou `sudo rpm -i <pacote>.rpm`).
 
 ### Instalação do vagrant base debian
 
@@ -329,7 +642,7 @@ Reading state information... Done
 All packages are up to date.
 ```
 
-> Na 1ª linha da saida, `Get:1 https://apt.releases.hashicorp.com noble InRelease [12.9 kB]` podemos ver que o repositório do vagrant já esta instalado no sistema.
+> Na 1ª linha a saida é: `Get:1 https://apt.releases.hashicorp.com noble InRelease [12.9 kB]` podemos ver que o repositório do vagrant já esta instalado no sistema.
 
 Por ultimo a instalação do vagrant
 
@@ -352,7 +665,9 @@ Unpacking vagrant (2.4.9-1) ...
 Setting up vagrant (2.4.9-1) ...
 ```
 
-> Para mais detalhes sobre o Vagrant veja o [vídeo no YouTube](https://www.youtube.com/watch?v=yW-2dFpL2-k).
+Vamos instalar o plugisn do libvirt para o vagrant.
+
+> Para mais detalhes sobre o Vagrant veja o [vídeo](https://www.youtube.com/watch?v=yW-2dFpL2-k).
 
 2. Após a instalação abra um terminal ou um prompt de comando e execute o comando `vagrant --version` para verificar se o pacote foi instalado com sucesso.
 
@@ -360,7 +675,7 @@ Setting up vagrant (2.4.9-1) ...
  paulo@devops  ~  vagrant --version
 Vagrant 2.4.9
 ```
-### Preparando o Ambiente
+## Preparando o Ambiente
 
 Após instalar o **Vagrant** e o **Virt-manager**, podemos criar um diretório com toda estrutura do ambiente.
 
@@ -374,7 +689,7 @@ drwxr-xr-x 2 paulo paulo 4.0K Oct 14 15:38 recursos
 -rw-r--r-- 1 paulo paulo 1.9K Sep  5 14:34 Vagrantfile
 ```
 
-#### O que é o Vagrantfile
+### O que é o Vagrantfile
 
 **A principal função do Vagrantfile é descrever o tipo de máquina necessária para um projeto e como configurar e provisionar essas máquinas**. Os Vagrantfiles são chamados assim porque o nome literal do ficheiro é Vagrantfile (as maiúsculas e minúsculas não importam, a menos que o seu sistema de ficheiros esteja a funcionar num modo estritamente sensível a maiúsculas e minúsculas).
 
@@ -382,18 +697,15 @@ O Vagrant foi concebido para ser executado com um Vagrantfile por projeto, e o V
 
 A sintaxe dos Vagrantfiles é Ruby, mas não é necessário ter conhecimento da linguagem de programação Ruby para fazer modificações no Vagrantfile, uma vez que se trata principalmente de atribuições de variáveis simples. Na verdade, Ruby nem sequer é a comunidade mais popular em que o Vagrant é utilizado, o que deve ajudar a mostrar que, apesar de não terem conhecimento de Ruby, as pessoas têm muito sucesso com o Vagrant.
 
-Adicione o conteúdo ao arquivo Vagrantfile
+**Adicione o conteúdo ao arquivo Vagrantfile**
 
-```ruby
+```bash
 # -*- mode: ruby -*-
 # vi: set ft=ruby :
 
-# Definindo o domínio e a faixa de IP da rede
 domain = "docker-lab.example"
 network_ip_range = "192.168.200"
 
-# Definindo as máquinas do laboratório
-# A chave "role" não é mais necessária, pois o provisionamento é genérico
 machines = {
   "master"   => {"memory" => "2048", "cpu" => "2", "ip" => "10", "image" => "debian/bookworm64"},
   "node01"   => {"memory" => "2048", "cpu" => "2", "ip" => "21", "image" => "debian/bookworm64"},
@@ -404,35 +716,28 @@ machines = {
 Vagrant.configure("2") do |config|
   config.vm.boot_timeout = 600
 
-  # Configuração padrão do provedor libvirt
   config.vm.provider "libvirt" do |libvirt|
-    libvirt.uri = "qemu:///system" # URI do libvirt
-    libvirt.memory = 2048         # Memória padrão
-    libvirt.cpus = 2              # CPU padrão
+    libvirt.uri = "qemu:///system"
   end
 
-  # Loop para criar e configurar cada máquina
   machines.each do |name, conf|
     config.vm.define name do |machine|
-      # Definindo a caixa (box) e o hostname
       machine.vm.box = conf["image"]
       machine.vm.hostname = "#{name}.#{domain}"
 
-      # Configuração da rede privada com IP estático
-      # O IP deve corresponder à faixa do seu script
       machine.vm.network "private_network",
         ip: "#{network_ip_range}.#{conf["ip"]}",
-        libvirt__network_name: "default"  # Definindo a rede padrão do libvirt
+        libvirt__network_name: "vagrant-private-net"
 
-      # Configuração de recursos específicos para o provedor libvirt
       machine.vm.provider "libvirt" do |libvirt|
         libvirt.memory = conf["memory"]
         libvirt.cpus = conf["cpu"]
       end
 
-      # Provisionamento da máquina
-      # O script 'provision.sh' deve ser localizado no mesmo diretório do Vagrantfile
-      machine.vm.provision "shell", path: "provision.sh"
+      # Passando variáveis de ambiente para o script
+      machine.vm.provision "shell", 
+        path: "provision.sh",
+        env: {"REGISTRY_IP" => "#{network_ip_range}.50"}
     end
   end
 end
@@ -440,77 +745,79 @@ end
 
 > **Nota:** O arquivo `provision.sh` em ambientes Docker, ele é usado para automatizar tarefas de configuração ou instalação dentro de uma imagem ou contêiner.
 
-O arquivo é mostrado abaixo:
+**O arquivo é mostrado abaixo:**
 
 ```bash
 #!/bin/bash
 set -e
 
-DOMAIN="docker-lab.example"
+echo "--- Iniciando Provisionamento em $(hostname) ---"
 
-echo "[INFO] Iniciando provisionamento da máquina..."
+# 1. Configurar /etc/hosts para resolução local
+# Mantemos o localhost e adicionamos as máquinas do lab
+cat <<EOF > /etc/hosts
+127.0.0.1   localhost
+192.168.200.10 master.docker-lab.example master
+192.168.200.21 node01.docker-lab.example node01
+192.168.200.22 node02.docker-lab.example node02
+192.168.200.50 registry.docker-lab.example registry
+EOF
 
-# Definindo o hash de IPs para que o script seja dinâmico
-declare -A HOSTS_MAP=(
-    ["master"]="192.168.200.10"
-    ["node01"]="192.168.200.21"
-    ["node02"]="192.168.200.22"
-    ["registry"]="192.168.200.50"
-)
-
-# Atualizando /etc/hosts
-echo "[INFO] Atualizando /etc/hosts..."
-sed -i '/docker-lab.example/d' /etc/hosts
-for host in "${!HOSTS_MAP[@]}"; do
-    echo "${HOSTS_MAP[$host]} ${host}.${DOMAIN}" >> /etc/hosts
-done
-
-# Detectando sistema operacional
-OS_ID=$(grep -E '^ID=' /etc/os-release | cut -d'=' -f2 | tr -d '"')
-
-# Verificando se o Docker está instalado
-if ! [ -x "$(command -v docker)" ]; then
-    echo "[INFO] Docker não está instalado. A instalação automática foi desabilitada."
-
-    # Bloco de instalação do Docker (comentado)
-    : '
-    echo "[INFO] Iniciando a instalação do Docker..."
-
-    if [[ "$OS_ID" == "ubuntu" ]]; then
-        # Instalação no Ubuntu (Jammy)
-        sudo apt-get update
-        sudo apt-get install -y ca-certificates curl gnupg lsb-release
-        sudo mkdir -p /etc/apt/keyrings
-        curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo gpg --dearmor -o /etc/apt/keyrings/docker.gpg
-        echo "deb [arch=$(dpkg --print-architecture) signed-by=/etc/apt/keyrings/docker.gpg] https://download.docker.com/linux/ubuntu $(lsb_release -cs) stable" | sudo tee /etc/apt/sources.list.d/docker.list > /dev/null
-        sudo apt-get update
-        sudo apt-get install -y docker-ce docker-ce-cli containerd.io docker-buildx-plugin docker-compose-plugin
-
-    elif [[ "$OS_ID" =~ ^(almalinux|centos|rocky)$ ]]; then
-        # Instalação no AlmaLinux/RHEL
-        sudo dnf update -y
-        sudo dnf install -y dnf-utils
-        sudo dnf config-manager --add-repo https://download.docker.com/linux/centos/docker-ce.repo
-        sudo dnf install -y docker-ce docker-ce-cli containerd.io docker-buildx-plugin docker-compose-plugin
-
-    else
-        echo "[ERROR] Sistema operacional não suportado para instalação automática do Docker."
-        exit 1
-    fi
-
-    # Habilitando e iniciando o serviço Docker
-    sudo systemctl enable --now docker
-
-    # Adicionando o usuário 'vagrant' ao grupo 'docker'
-    if id "vagrant" &>/dev/null; then
-        sudo usermod -aG docker vagrant
-    fi
-    '
-else
-    echo "[INFO] Docker já está instalado. Nenhuma ação necessária."
+# 2. Detectar SO e Instalar Docker (COMENTADO)
+if [ -f /etc/debian_version ]; then
+    OS_TYPE="debian"
+elif [ -f /etc/redhat-release ]; then
+    OS_TYPE="rhel"
 fi
 
-echo "[INFO] Provisionamento concluído com sucesso!"
+echo "[INFO] Instalação automática do Docker para $OS_TYPE está desativada (bloco comentado)."
+
+: '
+if [ "$OS_TYPE" == "debian" ]; then
+    echo "Sabor detectado: Debian/Ubuntu"
+    apt-get update
+    apt-get install -y apt-transport-https ca-certificates curl gnupg lsb-release
+    curl -fsSL https://download.docker.com/linux/debian/gpg | gpg --dearmor -o /usr/share/keyrings/docker-archive-keyring.gpg
+    echo "deb [arch=$(dpkg --print-architecture) signed-by=/usr/share/keyrings/docker-archive-keyring.gpg] https://download.docker.com/linux/debian $(lsb_release -cs) stable" > /etc/apt/sources.list.d/docker.list
+    apt-get update
+    apt-get install -y docker-ce docker-ce-cli containerd.io
+
+elif [ "$OS_TYPE" == "rhel" ]; then
+    echo "Sabor detectado: RHEL/AlmaLinux"
+    yum install -y yum-utils
+    yum-config-manager --add-repo https://download.docker.com/linux/centos/docker-ce.repo
+    yum install -y docker-ce docker-ce-cli containerd.io
+    systemctl enable --now docker
+fi
+'
+
+# 3. Configurar Insecure Registry
+# Nota: Só tentará configurar/reiniciar se o binário do docker existir
+if [ -x "$(command -v docker)" ]; then
+    echo "[INFO] Configurando Insecure Registry e permissões..."
+    mkdir -p /etc/docker
+    cat <<EOF > /etc/docker/daemon.json
+{
+  "insecure-registries": ["192.168.200.50:5000"],
+  "exec-opts": ["native.cgroupdriver=systemd"]
+}
+EOF
+
+    systemctl restart docker
+    usermod -aG docker vagrant
+
+    # 4. Se for a máquina Registry, rodar o container de registro
+    if [[ "$(hostname)" == *"registry"* ]]; then
+        if ! docker ps -a | grep -q "local-registry"; then
+            echo "Configurando Container Registry..."
+            docker run -d -p 5000:5000 --restart=always --name local-registry registry:2
+        fi
+    fi
+else
+    echo "[WARN] Docker não encontrado. Pulando configurações do daemon.json e Registry."
+fi
+
+echo "--- Provisionamento concluído! ---"
 ```
 
 Adicione também as seguintes entradas ao arquivo `hosts` da sua máquina.
@@ -544,10 +851,9 @@ ff02::2 ip6-allrouters
 192.168.200.50  registry.docker.example
 ```
 
-> Em máquinas **Linux** e **MacOS** o arquivo fica localizado em `/etc/hosts`
-> Em máquinas **Windows** o arquivo fica localizado em `C:\Windows\System32\drivers\etc\hosts`
+> Em máquinas **Linux** e **MacOS** o arquivo fica localizado em `/etc/hosts`. Em máquinas **Windows** o arquivo fica localizado em `C:\Windows\System32\drivers\etc\hosts`.
 
-## Garantindo as chaves
+### Garantindo as chaves
 
 ![chaves-ssh](../pic/ssh-key.png)
 
@@ -561,7 +867,7 @@ total 8
 -rw-r--r-- 1 paulo paulo  566 Oct 14 15:45 key.pub
 ```
 
-## Adicionando as imagens
+### Adicionando as imagens
 
 Para não haver problemas de rede com o laboratóro crie o seguinte caminho: `sudo vim /etc/vbox/networks.conf` e cole o conteúdo abaixo.
 
@@ -575,7 +881,13 @@ Para não haver problemas de rede com o laboratóro crie o seguinte caminho: `su
 
 > **Nota:** Essa opção usei quando o laboratório era com o virtual box. Durante a instalação se for necéssaio para o virt-manager, vou adicionar.
 
-Adicionando a imagem do debian12
+As imagens podem ser encotradas [aqui](https://portal.cloud.hashicorp.com/vagrant/discover).
+
+**Adicionando a imagem do debian12 com o seguinte comando: **
+
+`vagrant box add nome-da-box`
+
+**Exemplo:** `vagrant box add debian/bookworm64`
 
 ![add-deb](../pic/add-debian12.png)
 
@@ -598,7 +910,7 @@ Enter your choice: 1
 ==> box: Successfully added box 'debian/bookworm64' (v12.20250126.1) for 'libvirt (amd64)'!
 ```
 
-Adicionando a imagem do almalinux8
+**Adicionando a imagem do almalinux8**.
 
 ![add-almalinux](../pic/add-almalinux.png)
 
@@ -634,9 +946,9 @@ total 8.0K
 drwxrwxr-x 3 paulo paulo 4.0K Oct 14 15:57 almalinux-VAGRANTSLASH-8
 drwxrwxr-x 3 paulo paulo 4.0K Oct 14 15:51 debian-VAGRANTSLASH-bookworm64
 ```
-## Subindo o ambiente
+### Subindo o ambiente
 
-Para criar o ambiente do laboratório, execute o comando `vagrant up`, e o vagrant irá criar todas as máquinas virtuais bem como configurar os hostnames e endereços IP's.
+Para criar o ambiente do laboratório, execute o comando `vagrant init`, e o `vagrant up` irá criar todas as máquinas virtuais bem como configurar os hostnames e endereços IP's.
 
 Vamos subir as maquinas por etapas. 
 
@@ -650,12 +962,12 @@ Dentro do diretório onde está a infraestrutura execute o comando abaixo:
 
 > Para corrigir instalaei o seguinte:
 
-* `sudo install libvirt-dev`
-* `sudo apt-get install nfs-kernel-server` 
+- `sudo install libvirt-dev`
+- `sudo apt-get install nfs-kernel-server` 
 
 ![Instlaçao do ntfs](../pic/ntfs-install.png)
 
-* `sudo apt install vagrant-libvit`
+- `sudo apt install vagrant-libvit`
 
 ![Instlaçao do vlib](../pic/libinstall.png)
 
@@ -684,7 +996,7 @@ Bringing machine 'node01' up with 'libvirt' provider...
 ==> node01: 
 ==> node01: Vanilla Debian box. See https://app.vagrantup.com/debian for help and bug reports
 ```
-* Subir almalinux
+**Subir almalinux**
 
 ```bash
  paulo@devops  ~/Documents/projetos/docker  ls
@@ -707,7 +1019,7 @@ Bringing machine 'node02' up with 'libvirt' provider...
     node02: [INFO] Provisionamento concluído com sucesso!
 ```
 
-> **Observação:** Tenho um alerta ao subir as imagens, `[fog][WARNING] Unrecognized arguments: libvirt_ip_command` o que não é um erro e deixa o laboratório seguir em frente. Com mais calma vou investigando e ver como corrigir. 
+> **Observação:** Temos um alerta ao subir as imagens, `[fog][WARNING] Unrecognized arguments: libvirt_ip_command` o que não é um erro e deixa o laboratório seguir em frente. Com mais calma vamos investigando e ver como corrigir. 
 
 Vamos agora confirmar se as maquinas estão a rodar:
 
@@ -717,14 +1029,18 @@ Para deixar o ambiente mais clean, vamos rodar o comando `vagrant provision`.
 
 ![provisionamento](../pic/provision.png)
 
-## Acesso direto as maquinas
+### Acesso direto as maquinas
 
 - user: vagrant
 - pass: vagrant
 
 Para se conectar as máquinas utilize o comando `vagrant ssh <host>` informando o nome do host a ser conectado, lembre-se de estar dentro da pasta com o Vagrantfile.
 
-Vamos acessar a maquina node01
+**Vamos acessar a maquina node01**
+
+![conexão ssh](../pic/ssh-debian.png)
+
+**Vamos acessar a maquina node02**
 
 ![conexão ssh](../pic/ssh-debian.png)
 
@@ -739,22 +1055,20 @@ Aqui podemos desligar o ambiente de forma segura com o comando `vagrant halt`.
 
 Antes de prosseguir com as primeiras configurações, o técnico deve estar familiarizado com uma série de comandos Vagrant para criar, configurar, provisionar e gerenciar máquinas virtuais, além de interagir com o Docker dentro dessas máquinas. Abaixo estão alguns dos principais comandos Vagrant e como eles são usados no contexto de ambientes de laboratório Docker:
 
-| Comando                        | Descrição                                                                                          | Exemplo de Uso                              |
-|---------------------------------|----------------------------------------------------------------------------------------------------|---------------------------------------------|
-| `vagrant init`                  | Cria um arquivo `Vagrantfile` na pasta atual.                                                       | `vagrant init`                              |
-| `vagrant up`                    | Inicia a máquina virtual e executa o provisionamento.                                               | `vagrant up`                                |
-| `vagrant halt`                  | Desliga a máquina virtual de forma graciosa.                                                       | `vagrant halt`                              |
-| `vagrant destroy`               | Destroi a máquina virtual completamente, removendo-a.                                              | `vagrant destroy`                           |
-| `vagrant reload`                | Reinicia a máquina virtual, aplicando mudanças no `Vagrantfile` sem desligar e iniciar manualmente. | `vagrant reload`                            |
-| `vagrant ssh`                   | Acessa a máquina virtual via SSH para interagir diretamente com ela.                              | `vagrant ssh`                               |
-| `vagrant status`                | Exibe o status atual da máquina virtual (se está rodando, suspensa, etc.).                          | `vagrant status`                            |
-| `vagrant provision`             | Executa o processo de provisionamento novamente (ex.: instalar pacotes, configurar Docker, etc.).  | `vagrant provision`                         |
-| `vagrant suspend`               | Suspende a máquina virtual, salvando seu estado atual.                                             | `vagrant suspend`                           |
-| `vagrant up --provider=docker`  | Inicia um container Docker diretamente, em vez de uma máquina virtual.                             | `vagrant up --provider=docker`              |
-| `vagrant plugin install <plugin>`| Instala um plugin para o Vagrant (ex.: para adicionar suporte a Docker ou outros provedores).      | `vagrant plugin install vagrant-docker`     |
-| `vagrant box add <box_name>`    | Adiciona uma nova box ao Vagrant (imagem base para a VM).                                          | `vagrant box add ubuntu/bionic64`           |
+| **Comando** | **Descrição** |
+|-------------|---------------|
+| `vagrant up` | Inicia as máquinas definidas no Vagrantfile. Se for a primeira vez, ele baixa a box e executa o provisionamento. |
+| `vagrant status` | Mostra o estado atual das máquinas (rodando, desligada, não criada). |
+| `vagrant ssh <nome>` | Dá acesso ao terminal da VM. Ex: `vagrant ssh master`. |
+| `vagrant halt` | Desliga a máquina virtual de forma segura (como um shutdown). |
+| `vagrant reload` | Reinicia a VM. Essencial se você alterar algo no Vagrantfile (como CPU ou Rede). |
+| `vagrant provision` | Reexecuta os scripts de instalação (provision.sh) sem precisar reiniciar a máquina. |
+| `vagrant suspend` | "Pausa" a VM, salvando o estado atual na memória RAM (útil para economizar CPU sem desligar). |
+| `vagrant resume` | Retoma a máquina que foi pausada pelo comando anterior. |
+| `vagrant destroy` | Deleta tudo. Apaga os discos e remove a VM do KVM (não apaga o seu Vagrantfile). |
+| `vagrant box list` | Lista as imagens (boxes) que já estão baixadas no seu computador. |
 
-> Caso você queira saber mais sobre Vagrant veja o post no blog onde `Caio Delgado` ensina como utilizar o Vagrant para subir os laboratórios de estudo, para acessar basta clicar em [Vagrant-101](https://caiodelgado.dev/vagrant-101)
+> Caso você queira saber mais sobre Vagrant veja o post no blog onde `Caio Delgado` ensina como utilizar o Vagrant para subir os laboratórios de estudo, para acessar basta clicar[aqui](https://caiodelgado.dev/vagrant-101)
 
 ## Namespaces e Cgroups
 
@@ -789,10 +1103,10 @@ Cgroups são basicamente a tecnologia que nos permite definir limites de uso de 
 
 Basicamente, você usa cgroups para controlar quanto de um determinado recurso-chave (CPU, memória, rede e I/O de disco) pode ser acessado ou usado por um processo ou conjunto de processos. Os cgroups são um componente-chave dos containers porque geralmente há vários processos em execução em um container que precisam ser controlados juntos. Em um ambiente Kubernetes, por exemplo, os cgroups podem ser utilizados para implementar solicitações e limites de recursos e classes de QoS correspondentes no nível do pod.
 
-* **cpu**   : Divisão de CPU por containers.
-* **cpuset**: CPU Masks, para limitar threads
-* **memory**: Memória
-* **device**: Dispositivos 
+- **cpu**   : Divisão de CPU por containers.
+- **cpuset**: CPU Masks, para limitar threads
+- **memory**: Memória
+- **device**: Dispositivos 
 
 Os containers trabalham com cgroups (Control Groups) que fazem isolamento dos recursos físicos da máquina. Em geral os cgroups podem ser utilizados para controlar estes recursos tais como limites e reserva de CPU, limites e reserva de memória, dispositivos, etc…
 
@@ -1152,6 +1466,7 @@ Uma vez conectado na máquina docker, execute os seguintes comandos:
 ## Instalação em distribuição base debian
 
 ### Add Docker's official GPG key:
+
 sudo apt-get update
 sudo apt-get install ca-certificates curl
 sudo install -m 0755 -d /etc/apt/keyrings
@@ -1159,6 +1474,7 @@ sudo curl -fsSL https://download.docker.com/linux/ubuntu/gpg -o /etc/apt/keyring
 sudo chmod a+r /etc/apt/keyrings/docker.asc
 
 ### Add the repository to Apt sources:
+
 sudo echo  "deb [arch=$(dpkg --print-architecture) signed-by=/etc/apt/keyrings/docker.asc] https://download.docker.com/linux/ubuntu $(. /etc/os-release && echo "$VERSION_CODENAME") stable" | sudo tee /etc/apt/sources.list.d/docker.list > /dev/null
 sudo apt-get update
 sudo apt-get install docker-ce docker-ce-cli containerd.io docker-buildx-plugin docker-compose-plugin
@@ -1330,11 +1646,11 @@ Iremos agora aprender alguns comandos essenciais do Docker.
 
 O primeiro passo para entendermos os comandos do docker é visualizar sua lista de comandos, iremos falar dos seguintes comandos de gerenciamento ao longo desse material:
 
-* `docker container`
-* `docker image`
-* `docker network`
-* `docker system`
-* `docker volume`
+- `docker container`
+- `docker image`
+- `docker network`
+- `docker system`
+- `docker volume`
 
 Basta rodar o comando `docker help` para termos a ajuda do docker e os principais comandos.
 
@@ -1440,17 +1756,19 @@ hello-world             latest    d2c94e258dcb   11 months ago   13.3kB
 rockylinux/rockylinux   latest    523ffac7fb2e   21 months ago   196MB
 ```
 
-Para executar um container, utilizamos o comando **docker container run**
+Para executar um container, utilizamos o comando: `docker container run`
+
 ```bash
 vagrant@node01:~$ docker container run -dit --name debian1 --hostname c1 debian
 09eeee47fc46d44d03ecdf25476d53ddf1f69c6a6d08da756e8dce553ba5e01d
-
 ```
+
 **Descrição do comando:**
-* **docker container run  (...) debian** - Executa um container docker, sendo o último parâmetro o nome da imagem a ser utilizada  
-* **-dit** - Executa um container como processo (**d** = Detached), habilitando a interação com o container (**i** = Interactive) e disponibiliza um pseudo-TTY(**t** = TTY)
-* **--name** - Define o nome do container
-* **--hostname** - Define o hostname do container
+
+- **docker container run  (...) debian** - Executa um container docker, sendo o último parâmetro o nome da imagem a ser utilizada  
+- **-dit** - Executa um container como processo (**d** = Detached), habilitando a interação com o container (**i** = Interactive) e disponibiliza um pseudo-TTY(**t** = TTY)
+- **--name** - Define o nome do container
+- **--hostname** - Define o hostname do container
 
 Agora que temos nosso primeiro container em execução, podemos listar os containers (**docker container ls**) e conectar ao mesmo através do comando **docker container attach**
 
@@ -1473,9 +1791,10 @@ BUG_REPORT_URL="https://bugs.debian.org/"
 root@c1:/# 
 ```
 
-_Note que ao se conectar ao container a **PS1** será modificada para `root@c1:/#` ._
+> Note que ao se conectar ao container a **PS1** será modificada para `root@c1:/#`._
 
 Execute alguns comandos no container:
+
 ```bash
 ip -c a
 hostname
@@ -1506,7 +1825,9 @@ ff02::2	ip6-allrouters
 root@c1:/# exit
 exit
 ```
+
 Liste novamente os containers
+
 ```bash
 vagrant@node01:~$ docker container ls
 CONTAINER ID   IMAGE     COMMAND   CREATED   STATUS    PORTS     NAMES
@@ -1515,15 +1836,17 @@ CONTAINER ID   IMAGE     COMMAND   CREATED         STATUS                      P
 09eeee47fc46   debian    "bash"    6 minutes ago   Exited (0) 29 seconds ago             debian1
 ```
 
-_Note que agora o container está parado, isto aconteceu pois o processo principal do container recebeu um return code diferente de 0_
+> Note que agora o container está parado, isto aconteceu pois o processo principal do container recebeu um return code diferente de 0
 
 Podemos listar apenas o ID dos containers
+
 ```bash
 vagrant@node01:~$ docker container ls -aq
 09eeee47fc46
 ```
 
 Inicie novamente o container e conecte-se ao mesmo
+
 ```bash
 docker container start debian1
 docker container attach debian1
@@ -1662,6 +1985,7 @@ vagrant@node01:~$
 ```
 
 ### Desligando as maquinas
+
 ```bash
 xala@dev:docker-dca$ vagrant halt
 ==> registry: VM not created. Moving on...
@@ -1670,51 +1994,45 @@ xala@dev:docker-dca$ vagrant halt
 ==> master: VM not created. Moving on...
 ````
 
-## Conclusão
+### Conclusão
+
 Esse material vai abordar o conteúdo official do docker, e com exemplos práticos criado ao longo do nosso material.
 
 ### Resumindo a terminologia do Docker
 
-Contêiner: ambiente isolado e leve que pode ter seus próprios processadores, interfaces de rede, etc., mas compartilham o mesmo kernel do sistema operacional. Criado a partir de uma versão de imagem específica.
+**Contêiner:** ambiente isolado e leve que pode ter seus próprios processadores, interfaces de rede, etc., mas compartilham o mesmo kernel do sistema operacional. Criado a partir de uma versão de imagem específica.
+**Imagem:** uma imagem é basicamente um pacote executável que possui tudo o que é necessário para executar aplicativos, o que inclui um arquivo de configuração, variáveis ​​de ambiente, tempo de execução e bibliotecas.
+**Dockerfile:** contém todas as instruções para criar uma imagem do Docker. É basicamente um arquivo de texto simples com instruções para construir uma imagem. Você também pode se referir a isso como a automação da criação de imagens do Docker.
+**Tag:** versão de uma imagem. Cada imagem terá uma tag.
+**Docker Hub:** repositório de imagens onde podemos encontrar diferentes tipos de imagens.
+**Docker Engine:** o sistema que permite criar e executar contêineres do Docker.
+**Docker Registry:** o registro do Docker é uma solução que armazena suas imagens do Docker. Este serviço é responsável por hospedar e distribuir as imagens. O registro padrão é o Docker Hub.
+**Docker CLI:** interface de linha de comando (CLI) que permite à pessoa executar ações interagindo com Docker. Docker é executado em uma arquitetura cliente-servidor, o que significa que clientes Docker podem se conectar a hosts do Docker localmente ou remotamente. Tanto cliente quanto host do Docker (Daemon) podem ser executados no mesmo host, ou podem ser executados em hosts diferentes e se comunicar por meio de soquetes ou de uma API RESTful.
 
-Imagem: uma imagem é basicamente um pacote executável que possui tudo o que é necessário para executar aplicativos, o que inclui um arquivo de configuração, variáveis ​​de ambiente, tempo de execução e bibliotecas.
-
-Dockerfile: contém todas as instruções para criar uma imagem do Docker. É basicamente um arquivo de texto simples com instruções para construir uma imagem. Você também pode se referir a isso como a automação da criação de imagens do Docker.
-
-Tag: versão de uma imagem. Cada imagem terá uma tag.
-
-Docker Hub: repositório de imagens onde podemos encontrar diferentes tipos de imagens.
-
-Docker Engine: o sistema que permite criar e executar contêineres do Docker.
-
-Docker Registry: o registro do Docker é uma solução que armazena suas imagens do Docker. Este serviço é responsável por hospedar e distribuir as imagens. O registro padrão é o Docker Hub.
-
-Docker CLI: interface de linha de comando (CLI) que permite à pessoa executar ações interagindo com Docker. Docker é executado em uma arquitetura cliente-servidor, o que significa que clientes Docker podem se conectar a hosts do Docker localmente ou remotamente. Tanto cliente quanto host do Docker (Daemon) podem ser executados no mesmo host, ou podem ser executados em hosts diferentes e se comunicar por meio de soquetes ou de uma API RESTful.
-
-> docker container rm $(docker container ls -aq) --> Apaga e mostra todos os containers.
-> docker container ls -aq | xargs docker conatiner rm --> Recebe a entrada e apaga
-> docker container rm $(docker container ls -aq) -------> Apaga todos de uma vez.
+1. docker container rm $(docker container ls -aq) --> Apaga e mostra todos os containers.
+2. docker container ls -aq | xargs docker conatiner rm --> Recebe a entrada e apaga
+3. docker container rm $(docker container ls -aq) -------> Apaga todos de uma vez.
 
 ### Conteúdo Official
-Preparação da Máquina (Windows / Linux)
-Docker DCA 01 - Instalação e Fundamentos
-Docker DCA 02 - Comandos Docker e Imagens
-Docker DCA 03 - Docker Images - Melhores Práticas e Multistage Build
-Docker DCA 04 - Volumes
-Docker DCA 05 - Volume Plugins
-Docker DCA 06 - Networking
-Docker DCA 07 - Compose (docker-compose)
-Docker DCA 08 - Raft Consensus & Docker Swarm
-Docker DCA 09 - Docker Swarm - Registry, Services e Tasks
-Docker DCA 10 - Docker Swarm - Stacks
-Docker DCA 11 - Monitoramento (Prometheus + Node Exporter + Grafana + Cadvisor)
-Docker DCA 12 - Tools (PwD, Swarmpit, Portainer, Harbor e Docker Machine)
-Docker DCA 13 - Kubernetes
-Live   DCA 14 - Enterprise
 
-## Bons estudos!
+- Docker-DCA 01 - Instalação e Fundamentos
+- Docker-DCA 02 - Comandos Docker e Imagens
+- Docker-DCA 03 - Docker Images - Melhores Práticas e Multistage Build
+- Docker-DCA 04 - Volumes
+- Docker-DCA 05 - Volume Plugins
+- Docker-DCA 06 - Networking
+- Docker-DCA 07 - Compose (docker-compose)
+- Docker-DCA 08 - Raft Consensus & Docker Swarm
+- Docker-DCA 09 - Docker Swarm - Registry, Services e Tasks
+- Docker-DCA 10 - Docker Swarm - Stacks
+- Docker-DCA 11 - Monitoramento (Prometheus + Node Exporter + Grafana + Cadvisor)
+- Docker-DCA 12 - Tools (PwD, Swarmpit, Portainer, Harbor e Docker Machine)
+- Docker-DCA 13 - Kubernetes
 
-#### Jogo no docker
+**Bons estudos!**
+
+### Jogo no docker - Supermário
+
 docker container run -it -p 8080:8080 pengbai/docker-supermario
 
 
