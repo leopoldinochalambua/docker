@@ -91,7 +91,7 @@ Ele cria e mantém o isolamento entre os guests, garantindo que cada um funcione
 
 **Um hipervisor tipo 1** é executado diretamente no hardware físico do computador, interagindo diretamente com sua unidade central de processamento (CPU), memória e armazenamento físico. Por esse motivo, as pessoas também se referem aos hipervisores tipo 1 como hipervisores bare metal ou hipervisores nativos. Um hipervisor tipo 1 assume o lugar do sistema operacional host.
 
-[Hypervisor1](imagens/hypervisor1.png)
+![Hypervisor-tipo1](imagens/hypervisor1.png)
 
 Os hipervisores tipo 1 são altamente eficientes porque acessam diretamente o hardware físico. Esse recurso também aumenta sua segurança, pois não há nada entre eles e a CPU que um invasor possa comprometer. No entanto, um hipervisor tipo 1 geralmente exige uma máquina de gerenciamento separada para administrar diversas VMs e controlar o hardware do host.
 
@@ -99,7 +99,7 @@ Os hipervisores tipo 1 são altamente eficientes porque acessam diretamente o ha
 
 **Um hypervisor tipo 2** (também conhecido como hipervisor incorporado ou hospedado) não é executado diretamente no hardware subjacente. Em vez disso, é executado como uma aplicação em um SO.
 
-[Hypervisor1](imagens/hypervisor2.png)
+![Hypervisor-tipo1](imagens/hypervisor2.png)
 
 Os hipervisores tipo 2 raramente aparecem em ambientes baseados em servidores. Em vez disso, são adequados para usuários individuais de PCs que precisam executar sistemas operacionais diferentes. Por exemplo, engenheiros, profissionais de segurança que analisam malware e usuários corporativos que precisam acessar aplicações disponíveis somente em outras plataformas de software.
 
@@ -223,11 +223,11 @@ A principal diferença é que os containers do Docker compartilham o sistema ope
 
 ### Tabela de comparação docker Vs maquinas virtuais
 
-![Weaveworks - VM x Containers](../pic/docker_vs_vm.png)
+![VM x Containers](imagens/docker-vm.png)
 
 ### Por que usar Docker?
 
-- Antes do Docker:
+**Antes do Docker:**
 
 A implantação de aplicativos entre ambientes era muitas vezes difícil, dependências, configurações e variações de sistema operacional causavam dores de cabeça do tipo **“funciona aqui, mas não lá”**.
 
@@ -254,26 +254,25 @@ O Docker Engine é o componente principal que permite que o Docker execute cont�
 O Docker Engine Daemon (dockerd) é executado em segundo plano, ouvindo pedidos de API e gerindo objectos como imagens, containers, redes e volumes.
 O Cliente Docker (docker CLI) se comunica com o daemon usando uma API REST. Fornece o ambiente de execução onde as imagens Docker são instanciadas em containers activos.
 
-[Motro Docker](../pic/docker_enginer.png)
+![Motor-Docker](imagens/docker-enginer.png)
 
 Sem o motor Docker, as imagens Docker não podem ser construídas ou os contentores executados.
 
-O Cliente envia comandos Docker (docker build, docker run, etc.).
-O Daemon recebe estes comandos e executa operações de contentores.
-A API REST é a interface que permite esta comunicação.
+- O **Cliente** envia comandos Docker (docker build, docker run, etc.).
+- O **Daemon** recebe estes comandos e executa operações de contentores.
+- A **API REST** é a interface que permite esta comunicação.
+
 Em suma, o Docker Engine é o tempo de execução que torna a contentorização possível, ligando o cliente Docker ao daemon para construir e gerir contentores de forma eficiente.
 
 ### Dockerfile
 
 O Dockerfile usa DSL (Domain Specific Language) e contém instruções para gerar uma imagem Docker. O Dockerfile definirá os processos para produzir rapidamente uma imagem. Ao criar a sua aplicação, deve criar um Dockerfile por ordem, uma vez que o daemon do Docker executa todas as instruções de cima para baixo.
 
-[Docke file](../pic/docke_file.png)
+![Docker file](imagens/dockerfile.png)
 
 O Dockerfile é o código-fonte da imagem. (O daemon do Docker, muitas vezes referido simplesmente como "Docker", é um serviço em segundo plano que gere os contentores Docker num sistema).
 
-É um documento de texto que contém os comandos necessários que, ao 
-serem executados, ajudam a montar uma imagem Docker. A imagem Docker é 
-criada usando um Dockerfile.
+É um documento de texto que contém os comandos necessários que, ao serem executados, ajudam a montar uma imagem Docker. A imagem Docker é criada usando um Dockerfile.
 
 ### Imagem Docker
 
@@ -300,7 +299,7 @@ remotamente. Com a ajuda da API REST através de um socket UNIX ou de
 uma rede, o cliente Docker e o daemon interagem entre si. Para saber 
 mais sobre o funcionamento do Docker, consulte arquitetura do docker.
 
-[Arquitetura Docker](../pic/docker_architecture.png)
+![Arquitetura Docker](imagens/docker-architecture.png)
 
 - **CLI do Docker**: Interface de linha de comandos para interagir com o Docker
 Comandos comuns: docker run, docker build, docker pull
@@ -322,7 +321,7 @@ Todas as configurações e instruções para iniciar ou parar containers são di
 
 Podemos dizer também que um container é a unidade mínima computacional do Docker, ou seja, o menor recurso que o Docker pode fornecer.
 
-![Container](../pic/docker.png)
+!![Container](imagens/container.png)
 
 ### Docker Container
 
@@ -352,20 +351,20 @@ Através da introdução dos comandos essenciais do docker, o docker tornou-se u
 
 A seguir estão alguns dos comandos do docker que são usados comumente:
 
-| Comando Docker            | Descrição |
-|---------------------------|-----------|
-| **docker run**            | Usado para iniciar contêineres a partir de imagens, especificando opções de execução e comandos. |
-| **docker pull**           | Faz o download de imagens de contêiner do registro (como Docker Hub) para a máquina local. |
-| **docker ps**             | Exibe os contêineres em execução com informações importantes como ID, imagem e status. |
-| **docker stop**           | Encerra contêineres em execução, desligando os processos de forma controlada. |
-| **docker start**          | Reinicia contêineres parados, retomando suas operações do estado anterior. |
-| **docker login**          | Permite autenticar-se no registro Docker, habilitando o acesso a repositórios privados. |
-| **docker restart**        | Reinicia um contêiner em execução, útil para aplicar novas configurações ou atualizações. |
-| **docker rm**             | Remove contêineres parados do sistema para liberar espaço. |
-| **docker rmi**            | Remove imagens Docker não utilizadas do sistema. |
-| **docker images**         | Lista todas as imagens Docker disponíveis localmente, mostrando tamanho e tags. |
-| **docker exec**           | Executa um comando dentro de um contêiner em execução. Ex: `docker exec -it <container> bash`. |
-| **docker logs**           | Exibe os logs de saída de um contêiner, útil para depuração. |
+| **Comando Docker** | **Descrição**   |
+| ------------------ | --------------- |
+| `docker run`     | Usado para iniciar contêineres a partir de imagens, especificando opções de execução e comandos. |
+| `docker pull`    | Faz o download de imagens de contêiner do registro (como Docker Hub) para a máquina local. |
+| `docker ps`      | Exibe os contêineres em execução com informações importantes como ID, imagem e status.     |
+| `docker stop`    | Encerra contêineres em execução, desligando os processos de forma controlada.              |
+| `docker start`   | Reinicia contêineres parados, retomando suas operações do estado anterior.                 |
+| `docker login`   | Permite autenticar-se no registro Docker, habilitando o acesso a repositórios privados.    |
+| `docker restart` | Reinicia um contêiner em execução, útil para aplicar novas configurações ou atualizações.  |
+| `docker rm`      | Remove contêineres parados do sistema para liberar espaço.                                 |
+| `docker rmi`     | Remove imagens Docker não utilizadas do sistema.                                           |
+| `docker images`  | Lista todas as imagens Docker disponíveis localmente, mostrando tamanho e tags.            |
+| `docker exec`    | Executa um comando dentro de um contêiner em execução. Ex: `docker exec -it <container> bash`.|
+| `docker logs`    | Exibe os logs de saída de um contêiner, útil para depuração. |
 
 ### Docker Engine
 
@@ -430,7 +429,7 @@ Vagrant é um software de código aberto para criar e manter ambientes de desenv
 
 1. Acesse a página de [Downloads](https://developer.hashicorp.com/vagrant/install) e faça o download da versão correspondente ao seu sistema operacional.
 
-[Vagrant](imagens/vagrant-install.png)
+![Página-vagrant](imagens/vagrant-install.png)
 
 2. Para Windows, clique sob o instalador e avance até o final da instalação.
 
@@ -440,31 +439,37 @@ Vagrant é um software de código aberto para criar e manter ambientes de desenv
 
 **Vamos primeiro baixar as chaves:**
 
-[Vagrant install](imagens/vagrant.png)
+- `wget -O - https://apt.releases.hashicorp.com/gpg | sudo gpg --dearmor -o /usr/share/keyrings/hashicorp-archive-keyring.gpg`
+
+![Chaves-vagrant](imagens/chave-vagrant.png)
 
 **A seguir vamos adicionar o repositório:**
 
-- Para o debian o repositório atual fica assim: `echo "deb [arch=$(dpkg --print-architecture) signed-by=/usr/share/keyrings/hashicorp-archive-keyring.gpg] https://apt.releases.hashicorp.com $(grep -oP '(?<=VERSION_CODENAME=).*' /etc/os-release) main" | sudo tee /etc/apt/sources.list.d/hashicorp.list`
+![Repo-vagrant](imagens/repo-vagrant.png)
 
-[Vagrant-install](imagens/vagrant1.png)
+> Para o debian o repositório atual fica assim: 
 
-Vamos atualizar as listas de repositório para confirmar instalação do repositório do vagrant. 
+```bash
+echo "deb [arch=$(dpkg --print-architecture) signed-by=/usr/share/keyrings/hashicorp-archive-keyring.gpg] https://apt.releases.hashicorp.com $(grep -oP '(?<=VERSION_CODENAME=).*' /etc/os-release) main" | sudo tee /etc/apt/sources.list.d/hashicorp.list
+```
+
+Atualize as listas de repositório para confirmar instalação do repositório vagrant. 
 
 [Vagrant-install](imagens/vagrant2.png)
 
-> Na 4ª e 5ª linha a saida é: 
-- `Get:4 https://apt.releases.hashicorp.com trixie InRelease [12.9 kB]`
-- `Get:5 https://apt.releases.hashicorp.com trixie/main amd64 Packages [225 kB]`. 
+> Na 4ª linha a saida é: 
+
+- `Get:4 https://apt.releases.hashicorp.com resolute/main amd64 Packages [234 kB]`. 
 
 O que significa que o repositório do vagrant já esta instalado no sistema.
 
 **Por ultimo a instalação do vagrant**
 
-[Vagrant-install](imagens/vagrant3.png)
+[Instalação-vagrant](imagens/vagrant-install.png)
 
-Instale o pacotes `build-essential`, caso não tenhas no sistema.
+Instale o pacotes `build-essential`, caso não o tenhas no sistema.
 
-O pacote build-essential (note que o nome correto é build-essential, sem “s” no final) é um meta-pacote do Debian e do Ubuntu que instala as ferramentas básicas necessárias para compilar programas a partir do código-fonte.
+O pacote **build-essential** (note que o nome correto é build-essential, sem “s” no final) é um meta-pacote do Debian e do Ubuntu que instala as ferramentas básicas necessárias para compilar programas a partir do código-fonte.
 
 Ele não é um programa em si — ele instala vários pacotes importantes automaticamente.
 
@@ -478,31 +483,33 @@ Ele não é um programa em si — ele instala vários pacotes importantes automa
 | `libc6-dev` | Headers da biblioteca C                |
 | `dpkg-dev`  | Ferramentas para criar pacotes Debian  |
 
-[Vagrant-install](imagens/vagrant4.png)
+**Instalação**
+
+![Build-install](imagens/build1.png)
 
 Podemos ver quanto de downloads esse pacote requer.
 
-[Vagrant-install](imagens/vagrant5.png)
+![Build-install](imagens/build2.png)
 
 Instalação concluida com sucesso.
 
-[Vagrant-install](imagens/vagrant6.png)
+![Build-install](imagens/Build3.png)
 
 Após a instalação abra um terminal ou um prompt de comando e execute o comando `vagrant --version` para verificar se o pacote foi instalado com sucesso.
 
-[Vagrant-install](imagens/vagrant7.png)
+![Versão-do-vagrant](imagens/v.versao.png)
 
 > Para mais detalhes sobre o Vagrant veja o [vídeo](https://www.youtube.com/watch?v=yW-2dFpL2-k).
 
 ### O que é virt-manager
 
-A aplicação `virt-manager` é uma interface de utilizador de ambiente de trabalho para gerir máquinas virtuais através da libvirt. Destina-se principalmente a máquinas virtuais KVM, mas também gere Xen e LXC (contentores Linux). Apresenta uma visão resumida dos domínios em execução, o seu desempenho em tempo real e estatísticas de utilização de recursos. Os assistentes permitem a criação de novos domínios e a configuração e ajuste da alocação de recursos e hardware virtual de um domínio. Um visualizador de cliente VNC e SPICE incorporado apresenta uma consola gráfica completa para o domínio convidado.
+A aplicação `virt-manager` é uma interface de utilizador de ambiente de trabalho para gerir máquinas virtuais através da `libvirt`. Destina-se principalmente a máquinas virtuais **KVM**, mas também gere **Xen** e **LXC** (contentores Linux). Apresenta uma visão resumida dos domínios em execução, o seu desempenho em tempo real e estatísticas de utilização de recursos. Os assistentes permitem a criação de novos domínios, a configuração e ajuste da alocação de recursos e hardware virtual de um domínio. Um visualizador de cliente VNC e SPICE incorporado apresenta uma consola gráfica completa para o domínio convidado.
 
-Para instalar o Virt-manager é muito simples siga os passos:
+Para instalar o **Virt-manager** é muito simples siga os passos:
 
-Para Linux execute o programa de instalação de pacotes `sudo apt install` para sistemas debian-like ou `sudo yum install` para sistemas RHE.
+Para Linux debian-like execute o programa de instalação de pacotes `sudo apt install` ou `sudo yum install` para sistemas Rhel.
 
-### Instalação e Configuração do KVM no Debian GNU/Linux
+### Instalação e Configuração do KVM no Ubuntu GNU/Linux
 
 1. **Verificação de Requisitos do Sistema**
 
@@ -512,7 +519,7 @@ Antes de instalar o KVM (Kernel-based Virtual Machine), é fundamental confirmar
 
 `grep -E --color '(vmx|svm)' /proc/cpuinfo`
 
-[flags do sistema](imagens/virt0.png)
+![Flags do sistema](imagens/flags.png)
 
 Se o comando retornar a tag `vmx` ou `svm`, significa que a CPU suporta virtualização por hardware — requisito essencial para o KVM.
 
@@ -522,7 +529,7 @@ Se o comando retornar a tag `vmx` ou `svm`, significa que a CPU suporta virtuali
 
 Antes de iniciar a instalação, é recomendável atualizar a base de pacotes e garantir que o sistema está com as versões mais recentes dos componentes.
 
-![Atualização](imangens/virt9.png)
+![Upddate](imangens/atualizacao.png)
 
 Essa prática previne conflitos de dependência e garante maior estabilidade e segurança ao ambiente.
 
@@ -533,19 +540,19 @@ Essa prática previne conflitos de dependência e garante maior estabilidade e s
 A instalação do KVM no Debian pode ser feita em diferentes níveis. Para este laboratório, faremos uma instalação completa e otimizada, que inclui o hipervisor, ferramentas de gerenciamento, bibliotecas e utilitários de rede.
 
 ```bash
-:~#** apt install qemu-kvm libvirt-daemon-system libvirt-clients libvirt-daemon virtinst bridge-utils libosinfo-bin libguestfs-tools virt-manager
+:~# sudo apt install qemu-system-x86 libvirt-daemon-system libvirt-clients libvirt-daemon virtinst bridge-utils libosinfo-bin libguestfs-tools virt-manager
 ```
-![Instalação-kvm](imagens/virt.png)
+![Instalação-kvm](imagens/kvm-install.png)
 
 Podemos também ver quanto de download é necessario.
 
-![Instalação-kvm](imagens/virt1.png)
+![Instalação-kvm](imagens/kvm-install2.png)
 
 A tabela abaixo mostra a definição de cada pacote.
 
 | Pacote                    | Função                                     | Detalhes técnicos                                                                                                                         |
 | ------------------------- | ------------------------------------------ | ----------------------------------------------------------------------------------------------------------------------------------------- |
-| **qemu-kvm**              | Ativa virtualização KVM                    | Permite que o QEMU use aceleração por hardware (Intel VT-x / AMD-V). Sem ele, as VMs rodam sem aceleração.                                |
+| **qemu-system-x86 **              | Ativa virtualização KVM                    | Permite que o QEMU use aceleração por hardware (Intel VT-x / AMD-V). Sem ele, as VMs rodam sem aceleração.                                |
 | **libvirt-daemon-system** | Serviço principal do libvirt               | Fornece o daemon `libvirtd` e configurações padrão para gerenciar hipervisores como KVM. Necessário para gerir VMs de forma centralizada. |
 | **libvirt-clients**       | Ferramentas de linha de comando do libvirt | Inclui comandos como `virsh`, `virt-clone`, `virt-top`. Permite interagir com VMs via terminal.                                           |
 | **libvirt-daemon**        | Daemon que implementa libvirt              | Responsável pela comunicação entre o libvirt e o hipervisor KVM/QEMU. Também coordena redes, storage pools e dispositivos.                |
@@ -563,51 +570,51 @@ Por padrão, o `virt-manager` solicita autenticação de root ao ser iniciado.
 
 Para garantir que o serviço inicie automaticamente junto ao sistema e evitar ter que inserir a senha sempre, adicione seu usuário aos grupos `libvirt` e `kvm`com os seguintes comandos:
 
-![Instalação kvm2](imagens/virt2.png)
+![Instalação kvm2](imagens/grupos-add.png)
 
 > Com o comando `id`, podemos verificar quais grupos o usuário `paulo` pertence.
 
-Habilita o serviço no boot e inicie com os seguintes comandos: `systemctl enable --now libvirtd` e `systemctl start livirtd`
+Habilita o serviço no boot e inicie com os seguintes comandos: `systemctl enable --now libvirtd`. e `systemctl start libvirtd`
 
-![Instalação kvm3](imagens/virt3.png)
+![Instalação kvm3](imagens/enable-service.png)
 
-Verifique se o serviço libvirtd está ativo e rodando o comando: `systemctl status libvirt`
+Inicie e verifique se o serviço libvirtd está ativo e rodando o comando: `systemctl start libvirtd` e `systemctl status libvirtd`
 
-![Instalação kvm4](imagens/virt4.png)
+![Instalação kvm4](imagens/status.png)
 
-Instalação de pacotes adicionais.
+**Instalação de pacotes adicionais.**
 
-- `apt install libvirt-dev nfs-kernel-server vagrant-libvirt`
+- `apt install libvirt-dev nfs-kernel-server`
 
-![Instalação kvm5](imagens/virt5.png)
+![Instalação kvm5](imagens/pacotes-adicionais.png)
 
-> **Observação:** Em alguns casos a rede pode estar desativada e `default network is not active` ao iniciar o virt-manager. Para isso podemos usar o comando `virsh net-start default`.
+Instale o vagrant plugin: `vagrant plugin install vagrant-libvirt`
+
+![Vagrant-plugin](/imagens/v.plugin.png)
+
+Repare que o pacote foi istalado sem privilegios administrativos.
+
+> **Observação:** Em alguns casos a rede pode estar desativada e receber o erro de: `default network is not active` ao iniciar o virt-manager. Para que isso não aconteça usamos o comando `virsh net-start default`.
 
 Depois, encerre a sessão e faça login novamente para que as permissões sejam aplicadas.
 
-> **Nota de segurança:** Em ambientes de produção, não é recomendado conceder permissões administrativas amplas sem necessidade. Neste material, manteremos o uso do modo root apenas quando estritamente necessário.
+> **Nota de segurança:** Em ambientes de produção, não é recomendado conceder permissões administrativas amplas sem necessidade. Neste material, manteremos o uso do `sudo` para termos privilégios administrativos.
 
 **Interface Gráfica: Virt-Manager**
 
 Após a instalação, o virt-manager pode ser iniciado pelo menu do sistema ou via terminal: `virt-manager`
 
-![Menu-de-pesquisa](imagens/virt6.png)
+![Menu-de-pesquisa](imagens/virt-manager.png)
 
-> **Dica profissional:** Utilize a aba “Ajuda → Sobre” para confirmar a versão do virt-manager instalada. Isso ajuda na compatibilidade com futuras atualizações de libvirt e qemu.
+> **Dica profissional:** Utilize a aba **Ajuda → Sobre** para confirmar a versão do virt-manager instalada. Isso ajuda na compatibilidade com futuras atualizações de libvirt e qemu.
 
-[Menu-sobre](imagens/virt7.png)
-
-Feito todos esses passos, vamos instalar o Pacote plugisn do libvirt para o vagrant.
-
-[Vagrant install](imagens/virt8.png)
-
-> **Nota:** Repare que o pacote foi istalado sem privilegios administrativos.
+[Menu-sobre](imagens/sobre.png)
 
 ## O Ambiente
 
 Após instalar o **Vagrant** e o **Virt-manager**, podemos criar um diretório com toda estrutura do ambiente.
 
-[Ambiente](imagens/ambiente.png)
+![Ambiente](imagens/ambiente-docker.png)
 
 ### O que é o Vagrantfile
 
@@ -750,7 +757,7 @@ Adicione também as seguintes entradas ao arquivo `hosts` da sua máquina.
 192.168.200.50  registry.docker.example
 ```
 
-[Ambiente](imagens/ambiente1.png)
+![Ambiente](imagens/ambiente-docker2.png)
 
 > Em máquinas **Linux** e **MacOS** o arquivo fica localizado em `/etc/hosts`. Em máquinas **Windows** o arquivo fica localizado em `C:\Windows\System32\drivers\etc\hosts`.
 
@@ -758,43 +765,28 @@ Adicione também as seguintes entradas ao arquivo `hosts` da sua máquina.
 
 Para criar as chaves use o seguinte comando: `ssh-keygen -q -t rsa -f key -N ''`
 
-[Ambiente](imagens/ambiente2.png)
+![Ambiente](imagens/chaves-ssh.png)
 
 ### Adicionando as imagens
 
-Para não haver problemas de rede com o laboratóro crie o seguinte caminho: `sudo vim /etc/vbox/networks.conf` e cole o conteúdo abaixo.
+As imagens ou box vagrant podem ser encotradas [aqui](https://portal.cloud.hashicorp.com/vagrant/discover)
 
-``
-* 10.0.0.0/8 192.168.0.0/16
-* 2001::/64
-```
+**Adicionando a imagem do debian12 com o seguinte comando:**
 
-> **Nota:** Essa opção usei para o laboratório em virtual box. Durante a instalação se for necéssaio para o virt-manager, vou adicionar.
+`vagrant box add debian/bookworm64`
 
-As imagens ou box vagrant podem ser encotradas [aqui](https://portal.cloud.hashicorp.com/vagrant/discover).
+![box1](imagens/boxdebian.png)
 
-**Adicionando a imagem do debian12 com o seguinte comando: **
+Repare que baixamos a imagem para o nosso privider: `libvirt`.
 
-- `vagrant box add nome-da-box`
+`==> box: Successfully added box 'debian/bookworm64' (v12.20260519.1) for 'libvirt (amd64)'!`
 
-**Exemplo:** `vagrant box add debian/bookworm64`
-
-[box1](imagens/boxdebian.png)
-
-Repare que escolhemos a opção `1` o nosso provider.
-
-```bash
-1) libvirt
-2) virtualbox
-
-Enter your choice: 1
-```
 
 **Adicionando a imagem do almalinux8**.
 
-- `vagrant box add almalinux/8`
+`vagrant box add almalinux/8`
 
-[box2](imagens/boxalmalinux.png)
+![box2](imagens/boxalmalinux.png)
 
 Aqui a escolha foi a opção 2.
 
@@ -805,17 +797,18 @@ Aqui a escolha foi a opção 2.
 4) vmware_desktop
 
 Enter your choice: 2
+==> box: Adding box 'almalinux/8' (v8.10.20260518) for provider: libvirt (amd64)
 ```
 
 Podemos confirmar as imagens dento de `~/.vagrant.d/boxes`.
 
-[Ambiente](imagens/ambiente3.png)
+![Ambiente](imagens/boxlinux.png)
 
 ### Subindo o ambiente
 
 Para criar o ambiente do laboratório, execute o comando `vagrant init`, e o `vagrant up` irá criar todas as máquinas virtuais bem como configurar os hostnames e endereços IP's.
 
-Vamos subir as maquinas por etapas. 
+Aqui vamos subir as maquinas por etapas. 
 
 Execute o comando `vagrant up node01` e `vagrant up node02` para criar nossa infraestrutura. Vamos subir as maquinas `debian` **(node01)** e `almalinux`, **(node02**) para os nossos exemplos. O comando `vagrant --version` é usado para testar e ver a versão atual no sistema, como já vimos.
 
@@ -823,58 +816,54 @@ Dentro do diretório onde está a infraestrutura execute o comando abaixo:
 
 **Subir Debian**
 
-[box1](imagens/vagrantup1.png)
+![box-up](imagens/box01.png)
 
-A configuração da maquina começa, e depois concluida.
+A configuração da maquina começa, se não haver erro ela e conlida com sucesso.
 
-[box1](imagens/vagrantup2.png)
+![box-up](imagens/box-up01.png)
 
 **Subir almalinux**
 
-Para subirmos a maquina node02, o Vagrant usa `rsync` para sincronizar arquivos entre sua máquina host e a VM. Instale com o comando abaixo:
-
-- `apt install rsync`
-
-[box1](imagens/vagrantup3.png)
-
 E o mesmo processo acontece para a maquina **node02** A imagem é processada.
 
-[box1](imagens/vagrantup4.png)
+![box2](imagens/node02.png)
 
-A maquina é configurada e finalizada.
+A maquina é configurada 
 
-[box1](imagens/vagrantup5.png)
+![box2](imagens/boxnode02.png)
+
+Por fim finalizada.
+
+![box2](imagens/boxnode02.1.png)
 
 > **Observação:** Temos um alerta ao subir as imagens, `[fog][WARNING] Unrecognized arguments: libvirt_ip_command` o que não é um erro e deixa o laboratório seguir em frente. 
 
-Para deixar o sistema mais limpo, em alguns caso pode nos der recomendados a usar o comando `vagrant provision`, como mostra a imagem.
+Para deixar o sistema mais limpo, em alguns caso pode nos der recomendados a usar o comando `vagrant provision`.
 
-[box1](imagens/vagrantup6.png)
-
-Basta executar o comando.
-
-[box1](imagens/vagrantup7.png)
+![Provisionamento](imagens/provision.png)
 
 Vamos agora confirmar se as maquinas estão a rodar:
 
 - `vagrant status`.
 
-[box1](imagens/status.png)
+![box](imagens/v.status.png)
 
 No virt-manager podemos ver também.
 
-[box1](imagens/status1.png)
+![box](imagens/v.status1.png)
+
+> No debian o Vagrant usa `rsync` para sincronizar arquivos entre sua máquina host e a VM. Instale com o comando: `apt install rsync`
 
 ### Acesso direto as maquinas
 
-- user: vagrant
-- pass: vagrant
+- **user:** `vagrant`
+- **pass:** `vagrant`
 
 Para se conectar as máquinas utilize o comando `vagrant ssh <host>` informando o nome do host a ser conectado, lembre-se de estar dentro da pasta com o Vagrantfile.
 
 **Vamos acessar a maquina node01**
 
-[ssh](imagens/ssh1.png)
+[ssh](imagens/ssh-node.png)
 
 Podemos confirmar o sistema com o comando: `cat /etc/os-release`.
 
@@ -882,9 +871,9 @@ Podemos confirmar o sistema com o comando: `cat /etc/os-release`.
 
 Vamos deixar a lista de repositório atualizada.
 
-[ssh](imagens/ssh-update.png)
+[ssh](imagens/ssh-upgrade-node.png)
 
-83 pacotes podem ser atualizados, vamos rodar o comando `sudo apt upgrade`.
+3 pacotes podem ser atualizados, vamos rodar o comando `sudo apt upgrade`.
 
 [ssh](imagens/ssh-upgrade.png)
 
@@ -900,29 +889,17 @@ Por fim tudo atualizado.
 
 [ssh](imagens/ssh-update1.png)
 
-**Vamos acessar a maquina node02**. Vamos também confirmar o sistema com o comando: `hotnamectl`.
+**Vamos acessar a maquina node02**. Vamos também confirmar o sistema com o comando: `cat /etc/os-release`.
 
-![ssh](imagens/ssh3.png)
+![ssh](imagens/u-node02.png)
 
 Vamos atualizar o sistema. 
 
-![ssh](imagens/ssh-update2.png)
+![ssh](imagens/update-node02.png)
 
-...
-
-![ssh](imagens/ssh.update3.png)
-
-Em distribuições RedHat-like ele atualiza e instala novos pacotes no mesmo comanod. Vamos a instalação de pacotes basicos.
-
-![ssh](imagens/ssh-install1.png)
-
-Pacotes instalados com sucesso
+Em distribuições RedHat-like ele atualiza e instala novos pacotes no mesmo comando. Vamos a instalação de pacotes basicos.
 
 ![ssh](imagens/ssh-install2.png)
-
-Finalmente sistema atualizado.
-
-![ssh](imagens/ssh-update4.png)
 
 Para desligar as máquinas com segurança execute o comando `vagrant halt`. Para destruir o ambiente execute o comando `vagrant destroy`.
 
@@ -932,15 +909,15 @@ Até Aqui vemos que todo ambiente está em perfeitas condições, e podemos desl
 
 Podemos ver o status.
 
-[Desligar](imagens/halt2.png)
+[Desligar](imagens/halt-status.png)
 
 Bem como no virt-manager
 
-[Desligar](imagens/halt1.png)
+[Desligar](imagens/halt-vms1.png)
 
 ### Principais comandos do vagrant
 
-Antes de prosseguir com as primeiras configurações, o técnico deve estar familiarizado com uma série de comandos `Vagrant` para criar, configurar, provisionar e gerenciar máquinas virtuais, além de interagir com o Docker dentro dessas máquinas. Abaixo estão alguns dos principais comandos Vagrant e como eles são usados no contexto de ambientes de laboratório Docker:
+Antes de prosseguir com as primeiras configurações, o técnico deve estar familiarizado com uma série de comandos `Vagrant` para criar, configurar, provisionar e gerenciar máquinas virtuais, além de interagir com o Docker dentro dessas máquinas. Abaixo estão alguns dos principais comandos `Vagrant` e como eles são usados no contexto de ambientes de laboratório Docker:
 
 | **Comando** | **Descrição** |
 |-------------|---------------|
@@ -959,23 +936,21 @@ Antes de prosseguir com as primeiras configurações, o técnico deve estar fami
 
 O Docker utiliza de recursos do linux como por exemplo `namespaces`, e `cgroups` dentre vários outros que iremos falar futuramente para isolar os containers que serão executados.
 
+![Namespaces_Cgroups](imagens/cname.png)
+
 ### Namespaces 
 
 Os namespaces fazem parte do kernel do Linux desde 2002 (introduzido na versão 2.4.19 do kernel), é uma feature que permite criar e lidar com diversos contextos em um mesmo sistema, vendo propriedades globais diferentes e isoladas em cada contexto. Basicamente, os namespaces são responsáveis por gerar o isolamento de grupos de processos em seu nível lógico, como o gerenciamento de usuários, rede, etc., garantido que o container não enxergue os processos do host e vice-versa. Logo, ao criar um container, são criados namespaces como PID (Process ID) para isolar processos, NET (Network) para controlar e isolar as redes de cada container, IPC (Inter Process Communication) que permite a comunicação entre processos, etc.
 
 O uso de containers oferece um ambiente isolado que parece uma VM completa. No entanto, não é uma VM - é um processo em execução em um servidor em algum lugar. Se por exemplo forem iniciados dois containers, haverá dois processos em execução em um único servidor em algum lugar - mas eles estão isolados um do outro.
 
-![Namespaces](imagens/namespaces.png)
-
-* **PID**: Process ID
-* **MNT**: Mount Points O namespace de montagem é usado para isolar os pontos de montagem de forma que os processos em diferentes namespaces não possam visualizar os arquivos uns dos outros. Se você estiver familiarizado com o comando chroot, ele funciona de forma semelhante. 
-* **IPC**: Comunicação Inter Processos
-* **UTS**: Unix Timesharing System (Kernel e Identificadores)
-* **NET**: Networking Cada computador conectado a uma rede (como a Internet) requer um endereço IP. Este é um número exclusivo que permite que os computadores se comuniquem com eficácia.
+- **PID**: Process ID
+- **MNT**: Mount Points O namespace de montagem é usado para isolar os pontos de montagem de forma que os processos em diferentes namespaces não possam visualizar os arquivos uns dos outros. Se você estiver familiarizado com o comando chroot, ele funciona de forma semelhante. 
+- **IPC**: Comunicação Inter Processos
+- **UTS**: Unix Timesharing System (Kernel e Identificadores)
+- **NET**: Networking Cada computador conectado a uma rede (como a Internet) requer um endereço IP. Este é um número exclusivo que permite que os computadores se comuniquem com eficácia.
 
 ### cgroups
-
-![cgroups](imagens/cgroups.png)
 
 Cgroups são basicamente a tecnologia que nos permite definir limites de uso de recursos em processos Linux. Muitos recursos podem ser limitados pelo uso de Cgroups. Os cgroups fornecem os seguintes recursos:
 

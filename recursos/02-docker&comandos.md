@@ -1,8 +1,6 @@
 ## Inslação do Docker 
 
-Para esse capitulo vamos deixar o sistema com ar mais dev. Vamos instalar alguns pacotes como: `git`, e `zsh`.
-
-Instalamos o `zsh` e o `git`, e um editor de texto simpatico.
+Para esse capitulo vamos deixar o sistema com um ar mais `devop`. Vamos instalar o pacotes: `zsh`.
 
 [zsh](imagens/dev.png)
 
