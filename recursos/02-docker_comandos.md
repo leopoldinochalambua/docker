@@ -658,124 +658,123 @@ Existem diversos outros subcomandos associados a cada categoria de gestão que i
 
 ### Executando comandos
 
-Já conectados, vamos executar os comandos do docker na máquina. 
+Já com a sessão iniciada na nossa máquina virtual, vamos começar a executar os comandos do Docker.
 
-Para visualizar informações do ambiente, podemos utilizar o comando **docker system info** o qual exibirá informações do Docker como versão, quantidade de containers em execução, storage drivers, entre outros.
-
-```bash
-docker system info
-docker info
-```
-[Docker-install](imagens/docker32.png)
-
-_Os comandos listados acima são equivalentes._
-
-> **Nota:** Para listar containers, imagens, redes e volumes no docker, utilizamos o comando **docker** \<comando\> **ls**
-
-- **docker container ls** - lista os containers
-- **docker image ls** - lista as imagens
-- **docker network ls** - lista as redes
-- **docker volume ls** - lista os volumes
-
-Para pesquisar por uma imagem, utilizamos o comando **docker search** e o nome da imagem desejada.
+Para visualizar as informações gerais do ambiente, podemos utilizar o comando `docker system info` (ou o seu atalho `docker info`). Este comando exibirá dados estruturais importantes, tais como a versão do motor, a quantidade de containers ativos e parados, os storage drivers em utilização, entre outros.
 
 [Docker-install](imagens/docker33.png)
 
-Para fazer o download da imagem utilizamos o comando **docker image pull**.
+_Os comandos listados acima são equivalentes._
+
+> **Nota:** Para listar qualquer objeto no Docker (contentores, imagens, redes ou volumes), utilizamos uniformemente a sintaxe: 
+
+`docker <objeto> ls`
+
+- `docker container ls` - Lista os contentores ativos.
+- `docker image ls` - Lista as imagens locais.
+- `docker network ls` - Lista as redes configuradas.
+- `docker volume ls` - Lista os volumes de dados.
+
+Para procurar uma imagem oficial ou comunitária diretamente no Docker Hub, utilizamos o comando `docker search` seguido do nome do componente desejado:
 
 [Docker-install](imagens/docker34.png)
 
-O mesmo podemos fazer para o rockylinux.
+Para transferir a imagem do registo para a nossa máquina local, utilizamos o comando `docker image pull`:
 
 [Docker-install](imagens/docker35.png)
 
-Podemos ver as imagens com o comando abaixo.
+Podemos efetuar o mesmo procedimento para obter a imagem do Alma Linux:
 
 [Docker-install](imagens/docker36.png)
 
-Para executar um container, basta utilizamos o comando: 
-
-`docker container run -dit --name debian1 --hostname c1 debian`.
+Para validar e listar todas as imagens que foram descarregadas e que já se encontram armazenadas localmente, executamos: `docker image ls`
 
 [Docker-install](imagens/docker37.png)
 
+### Primeiro Container
+
+Para criar e instanciar um novo container, utilizamos o comando docker container run acompanhado das respetivas flags de configuração:
+
+`docker container run -dit --name debian1 --hostname c1 debian`.
+
+[Docker-install](imagens/docker38.png)
+
 **Descrição do comando:**
 
-- **docker container run:** Cria e inicia um novo container a partir de uma imagem.
+- **docker container run:** Cria e inicia um novo contentor a partir duma imagem base.
 - **-dit** - Executa um container como processo (**d** = Detached), habilitando a interação com o container (**i** = Interactive) e disponibiliza um pseudo-TTY(**t** = TTY)
 - **-i + -t:** juntos (-it) são comuns para containers interativos.
 - **--name debian1:** Define o nome do container como debian1 (assim você não precisa usar o ID depois)
 - **--hostname c1:** Define o hostname dentro do container como c1
 
-Agora que temos nosso primeiro container em execução, podemos listar os containers `docker container ls` e conectar ao mesmo através do comando `docker container attach`.
-
-[Docker-install](imagens/docker38.png)
-
-> Note que ao se conectar ao container a **PS1** será modificada para `root@c1:/#`._
-
-Execute alguns comandos no container:
+Agora que temos o nosso primeiro contentor em execução, podemos listá-lo com `docker container ls` e ligar-nos diretamente à sua consola interativa através do comando `docker container attach`:
 
 [Docker-install](imagens/docker39.png)
 
-Esse erro é normal a imagem Debian padrão é bem mínima e não vem com o comando ip instalado.
+> Repare que, ao ligar-se ao contentor, o indicador do terminal (PS1) altera-se imediatamente para `root@c1:/#`, confirmando que está a operar como superutilizador dentro do ecossistema isolado.
 
-O comando `ip` faz parte do pacote: `iproute2`. E ele não vem por padrão em imagens leves do Debian usadas no Docker.
-
-Dentro do container, instale o pacote:
-
-Atualise as listas de repositórios.
+Se tentar executar o comando `ip` a ou `ip link` para verificar o endereçamento de rede, irá deparar-se com um erro:
 
 [Docker-install](imagens/docker40.png)
 
-Instale o pacote.
+Este comportamento é perfeitamente normal. As imagens oficiais do Docker são propositadamente minimalistas para garantir leveza e segurança, pelo que não trazem ferramentas de rede pré-instaladas. O utilitário `ip` faz parte do pacote `iproute2`, que precisa de ser instalado manualmente. 
+
+Para resolver isto, atualize o índice de pacotes internos do contentor e instale o utilitário:
+
+Atualiza as listas de repositórios do Debian interno.
 
 [Docker-install](imagens/docker41.png)
 
-Execute o comando.
+Instala o pacote de ferramentas de rede.
 
 [Docker-install](imagens/docker42.png)
 
-Podemos ainda executar mais como: `hostname` e `cat /etc/hosts`.
+Agora já pode validar a interface de rede virtual do container executando:
 
 [Docker-install](imagens/docker43.png)
 
-Liste novamente os containers
+Pode testar outros comandos utilitários para auditoria, tais como hostname ou inspecionar o mapeamento de DNS local: `hostname` e `cat /etc/hosts`.
 
 [Docker-install](imagens/docker44.png)
 
-A diferença entre esses dois comandos é simples, mas muito importante no dia a dia com Docker:
-
-- **docker container ls:** Mostra apenas containers em execução (running). Não retornou nada porque nenhum container está rodando no momento.
-- **docker container ls -a:** Mostra todos os containers, incluindo:
-	- Em execução
-	- Parados (exited)
-	-️ Pausados
-
-> Note que agora o container está parado, isto aconteceu pois o processo principal do container recebeu um return code diferente de `0`.
-
-Podemos listar apenas o ID dos containers: `docker container ls -aq`.
+Se digitar o comando `exit` para sair do terminal do contentor e de seguida tentar listar os contentores ativos `docker container ls`, ou `docker container ls -a` irá notar um comportamento importante:
 
 [Docker-install](imagens/docker45.png)
 
-Inicie novamente o container e conecte-se ao mesmo
+Compreender a diferença entre os seguintes comandos é crucial no dia a dia:
+
+- `docker container ls`: Apresenta única e exclusivamente os container que estão ativos e em execução (Running).
+- `docker container ls -a (All)`: Exibe o histórico completo de todos os container do sistema, estejam eles ativos, pausados ou parados (Exited).
+
+> O contentor parou porque, ao digitar exit, o processo principal (o PID 1, que era o próprio Bash) terminou com um código de retorno. Lembre-se: um container permanece ativo apenas enquanto o seu processo principal estiver em execução.
+
+Para listar de forma rápida apenas os IDs hexadecimais de todos os container (útil para automações e scripts de limpeza), utilize a flag -q (Quiet): `docker container ls -aq`
 
 [Docker-install](imagens/docker46.png)
 
-> **Nota:** O comando `docker container start` inicia um container parado, o comando `docker container stop` para um container que esteja em execução.
+Para reativar um container que foi parado sem ter de criar um novo do zero, utilizamos o comando `docker container start`. Para o interromper de forma controlada a partir de fora, usamos o `docker container stop`:
 
-Utilize a sequencia de teclas **_\<CTRL\> + \<P\> + \<Q\>_** para se desconectar do container sem que ele seja parado. Este comando é chamado de _Read escape sequence_.
+Inicia o contentor parado, e liga-se novamente à consola dele.
+
+[Docker-install](imagens/docker47.png)
+
+### Estado e a Sequência de Escape
+
+Se quiser sair do terminal do contentor sem o desligar, deixando-o a correr em segundo plano, não utilize o comando `exit`. Em vez disso, utilize a combinação de teclas conhecida como **Sequência de Escape (Read escape sequence)**:
 
 ```bash
 <CTRL> + <P> + <Q>
 ```
 
-[Docker-install](imagens/docker47.png)
+[Docker-install](imagens/docker48.png)
 
-_Note que agora o container ainda está com estatus **Up** o que significa que está em execução._
+Note que, ao regressar ao terminal da máquina hospedeira, se executar `docker container ls`, o estado do contentor aparecerá como `Up`, confirmando que ele continua em plena execução nos bastidores.
 
-Para verificar os logs do container utilizamos o comando `docker container logs`.
+[Docker-install](imagens/docker49.png)
 
-O comando docker container logs (ou simplesmente docker logs) é a sua principal ferramenta de "caixa-preta". Como os contêineres rodam de forma isolada, muitas vezes em segundo plano (modo daemon), esse comando serve para você espiar o que está acontecendo com a aplicação lá dentro.Por padrão, ele captura tudo o que a aplicação jogou no STDOUT (saída padrão) e no STDERR (saída de erro). 
+### Auditoria e Logs do container
+
+O comando `docker container logs` (ou simplesmente docker logs) é a sua principal ferramenta de "caixa-preta". Como os contêineres rodam de forma isolada, muitas vezes em segundo plano (modo daemon), esse comando serve para você espiar o que está acontecendo com a aplicação lá dentro.Por padrão, ele captura tudo o que a aplicação jogou no `STDOUT` (saída padrão) e no `STDERR` (saída de erro). 
 
 Se o seu contêiner morreu misteriosamente ou está dando erro 500, é aqui que você descobre o motivo.
 
@@ -789,37 +788,37 @@ Sintaxe Básica
 
 | **Opção**            | **Descrição**                                                    | **Exemplo de uso**                       |
 |----------------------|------------------------------------------------------------------|------------------------------------------|
-| `-f`, `--follow`     | Segue o log em tempo real (similar ao `tail -f`).                | `docker container logs -f meu_container` |
+| `-f`, `--follow`     | Acompanha os logs em tempo real (similar ao `tail -f`).          | `docker container logs -f meu_container` |
 | `--since`            | Mostra logs gerados a partir de uma data/hora específica.        | `docker container logs --since 2026-05-01 meu_container` |
 | `--until`            | Mostra logs até uma data/hora específica.                        | `docker container logs --until 10m meu_container` |
-| `-t`, `--timestamps` | Exibe timestamps nos logs.                                       | `docker container logs -t meu_container` |
+| `-t`, `--timestamps` | Exibe a data e hora exata em cada linha do log.                  | `docker container logs -t meu_container` |
 | `--tail`             | Mostra apenas as últimas N linhas do log.                        | `docker container logs --tail 100 meu_container` |
 | `--details`          | Exibe detalhes adicionais fornecidos pelo driver de log.         | `docker container logs --details meu_container` |
-| `-n` (ou `--tail`)   | Quantidade de linhas do log a mostrar (equivalente ao `--tail`). | `docker container logs -n 50 meu_container` |
+| `-n` (ou `--tail`)   | Quantidade de linhas do log a exibir (equivalente ao `--tail`).  | `docker container logs -n 50 meu_container` |
 
 As 4 Flags que Salvam Vidas no Dia a Dia. Para não ser soterrado por uma parede de texto gigante (especialmente em contêineres antigos), use estas flags:
 
-1. --follow ou -f (Modo "Tail")Funciona igual ao tail -f do Linux. Ele trava o terminal e fica mostrando os logs em tempo real conforme eles acontecem. Excelente para debugar requisições chegando no servidor.
+1. **--follow ou -f (Modo "Tail")** Funciona igual ao tail -f do Linux. Ele trava o terminal e fica mostrando os logs em tempo real conforme eles acontecem. Excelente para debugar requisições chegando no servidor.
 
-docker logs -f meu_nginx
+`docker container logs -f meu_nginx`
 
-2. --tail (Limitar o Histórico)
-
-Mostra apenas as últimas $n$ linhas do histórico de logs. É uma boa prática usar junto com o -f para não carregar o lixo do passado.
+2. **--tail (Limitar o Histórico)** Mostra apenas as últimas $n$ linhas do histórico de logs. É uma boa prática usar junto com o -f para não carregar o lixo do passado.
 
 Mostra as últimas 50 linhas e continua acompanhando em tempo real
 
-docker logs -f --tail 50 meu_banco_dados
+`docker container logs -f --tail 50 meu_banco_dados`
 
-3. --timestamps ou -t (Linha do Tempo)Adiciona a data e a hora exata (com precisão de nanossegundos) em que cada linha de log foi gerada. Essencial se a aplicação interna não gera timestamps nativos no log.
+3. **--timestamps ou -t (Linha do Tempo)** Adiciona a data e a hora exata (com precisão de nanossegundos) em que cada linha de log foi gerada. Essencial se a aplicação interna não gera timestamps nativos no log.
 
-docker logs -t meu_container
+`docker container logs -t meu_container`
 
-4. --since (Filtrar por Tempo)Permite extrair logs criados a partir de um momento específico. Aceita tempos relativos (como 5m para 5 minutos, 1h para 1 hora) ou datas completas.Bash# Mostra apenas os logs gerados nos últimos 10 minutos
+4. **--since (Filtrar por Tempo)** Permite extrair logs criados a partir de um momento específico. Aceita tempos relativos (como 5m para 5 minutos, 1h para 1 hora) ou datas completas.Bash# Mostra apenas os logs gerados nos últimos 10 minutos
 
-docker logs --since 10m minha_api
+`docker container logs --since 10m minha_api`
 
-> Dica de Infraestrutura: Se você rodar um comando docker logs e ele não trouxer nada, mas você sabe que a aplicação está rodando, verifique o Logging Driver do Docker. Por padrão, o Docker usa o driver json-file (guarda os logs em arquivos JSON dentro de /var/lib/docker/containers/). Se a empresa alterou o driver para mandar os logs direto para um Syslog, Fluentd ou Splunk, o comando local do Docker ficará vazio!
+> Dica de Infraestrutura: Se você rodar comando `docker container logs` e ele não trouxer nada, mas você sabe que a aplicação está rodando, verifique o Logging Driver do Docker. Por padrão, o Docker usa o driver **json-file** (que guarda os logs em ficheiros JSON dentro de `/var/lib/docker/containers/`). Se a infraestrutura da empresa tiver sido alterada para encaminhar os logs diretamente para um Syslog remoto, Fluentd ou Splunk, o comando local do Docker ficará vazio!
+
+Atente no seguinte cenário real de erro cometido por um administrador durante a análise:
 
 ```bash
 vant@node01:~$ docker container logs debian1
@@ -831,23 +830,29 @@ root@c1:/# exit
 exit
 ```
 
-Pare e remova o container, após isto verifique os containers existentes
+O utilizador tentou executar o comando docker dentro do próprio container Debian (root@c1:/#). Como o container é isolado e minimalista, ele não tem o binário do Docker instalado lá dentro. Para gerir os logs ou o estado do container, os comandos têm de ser executados na máquina hospedeira (host), o que obrigou o utilizador a digitar `exit` para regressar ao terminal correto.
 
-```bash
-docker container stop debian1
-docker container rm debian1
-docker container ls -a
-```
+### Eliminação de containers
 
-[Docker-install](imagens/docker48.png)
+Para parar e remover o contentor de forma limpa, e de seguida auditar o ambiente, execute:
 
-> **Noata:** Podemos utilizar o parâmetro `-f` no comando `docker container rm` para que o container seja removido mesmo que esteja sendo executado_.
+- Para o contentor: `docker container stop debian1`
+- Remove o contentor do sistema: `docker container rm debian1`
+- Valida se o contentor foi totalmente removido: `docker container ls -a`
 
-Execute um novo container
+[Docker-install](imagens/docker50.png)
 
-[Docker-install](imagens/docker49.png)
+> **Noata:** É possível forçar a remoção de um contentor ativo sem o parar previamente utilizando a `flag -f` (Force): `docker container rm -f debian1`-
 
-Crie um arquivo de teste na pasta atual para enviar ao container c1.
+### Cópia de Ficheiros e Execução Remota (cp e exec)
+
+Inicie um novo contentor de testes:
+
+`docker container run -dit --name c1 --hostname c1 debian`
+
+[Docker-install](imagens/docker51.png)
+
+Crie um ficheiro de teste na pasta `/tmp` da máquina hospedeira para enviá-lo para dentro do contentor c1:
 
 ```bash
 vagrant@node01:~$ echo "Arquivo de teste docker" > /tmp/arquivo.txt
@@ -855,13 +860,13 @@ vagrant@node01:~$ docker container cp /tmp/arquivo.txt c1:tmp
 Successfully copied 2.05kB to c1:tmp
 ```
 
-[Docker-install](imagens/docker50.png)
+[Docker-install](imagens/docker52.png)
 
-> O comando **docker container cp** copia um arquivo da maquina host para o container ou vice-versa.
+> O comando `docker container cp` é bidirecional. Permite copiar ficheiros da máquina hospedeira (host) para dentro do contentor, ou extrair ficheiros do contentor para o host.
 
-Verifique se o arquivo existe dentro do container através do comando **exec**
+Para verificar se o ficheiro foi copiado corretamente sem ter de abrir uma sessão interativa `(attach)`, utilize o comando `exec`:
 
-[Docker-install](imagens/docker51.png)
+[Docker-install](imagens/docker53.png)
 
 
 ```bash
@@ -874,11 +879,13 @@ Arquivo de teste docker
 
 > O comando **docker container exec** executa um comando no container e envia o retorno na saída padrão(STDOUT) da máquina, caso o container não tenha sido iniciado com a opção **-i** o retorno não será mostrado no STDOUT.
 
-Remova o container criado anteriormente
+Remova o contentor c1 antes de avançar para o próximo exercício:
 
-[Docker-install](imagens/docker52.png)
+[Docker-install](imagens/docker54.png)
  
-### script para criar containers
+### Automatização com Scripts: Criação e Remoção em Massa
+
+Se precisarmos de criar containers de teste sequencialmente para simular uma carga de trabalho, podemos utilizar uma estrutura de repetição (loop) em Bash:
 
 ```bash
 for i in $(seq 1 10)
@@ -886,114 +893,143 @@ for i in $(seq 1 10)
 > docker conatainer run -it hello-word
 > done
 ```
-> Ou escrever o codigo em apenas uma linha: `for i in $(seq 1 10); do docker container run -it hello-world; done`.
-
-[Docker-install](imagens/docker53.png)
-
-**Explicação**
-
-- **for i in $(seq 1 10)** - cria um loop de 1 a 10
-- **i** - variável que recebe cada valor
-- **do ... done** - bloco de execução
-- **docker container run** - comando correto 
-- **hello-world** - nome da imagem 
-
-Podemos listar todos `ID`.
-
-[Docker-install](imagens/docker54.png)
-
-
-```bash
-vagrant@node01:~$ docker container ls -aq
-f2bf59d9cdf9
-8ac102884338
-c35b521b4c45
-7f77c81c3cc8
-26dbf0eb8321
-c861ac1bb753
-ecf584884a4b
-1d9c126940a2
-729d9b9f0e8f
-4286159e615c
-```
-
-## Apagar todos os containers de uma vez
-
-`docker container rm $(docker container ls -aq)`
+Se preferir executar tudo numa única linha diretamente no terminal: `for i in $(seq 1 10); do docker container run -it hello-world; done`.
 
 [Docker-install](imagens/docker55.png)
 
-## Conclusão
+**Explicação**
 
-Esse material vai abordar o conteúdo official do docker, e com exemplos práticos criado ao longo do nosso estudo.
+- `for i in`: Inicia o ciclo (loop). A letra i é a variável local que guardará o número da iteração atual.
+- `$(seq 1 10)`: Gera a sequência numérica de 1 a 10 que alimenta o ciclo.
+- `; do`: Abre o bloco de execução das instruções.
+- `docker container run`: Cria e inicia um novo contentor.
+- `-it (-i + -t)`: * -i (Interactive): Mantém o canal de entrada padrão (STDIN) aberto para interagir com o contentor.
+- `-t (TTY)`: Aloca um pseudo-terminal simulado dentro do contentor.
+- `hello-world`: A imagem oficial de teste do Docker.
+- `; done`: Encerra o ciclo.
 
-## Resumindo a terminologia do Docker
+Para listar apenas os identificadores hexadecimais únicos (IDs) de todos os containers que foram criados pelo script, adicionamos a flag `-aq`:
 
-**Contêiner:** ambiente isolado e leve que pode ter seus próprios processadores, interfaces de rede, etc., mas compartilham o mesmo kernel do sistema operacional. Criado a partir de uma versão de imagem específica.
-**Imagem:** uma imagem é basicamente um pacote executável que possui tudo o que é necessário para executar aplicativos, o que inclui um arquivo de configuração, variáveis ​​de ambiente, tempo de execução e bibliotecas.
-**Dockerfile:** contém todas as instruções para criar uma imagem do Docker. É basicamente um arquivo de texto simples com instruções para construir uma imagem. Você também pode se referir a isso como a automação da criação de imagens do Docker.
-**Tag:** versão de uma imagem. Cada imagem terá uma tag.
-**Docker Hub:** repositório de imagens onde podemos encontrar diferentes tipos de imagens.
-**Docker Engine:** o sistema que permite criar e executar contêineres do Docker.
-**Docker Registry:** o registro do Docker é uma solução que armazena suas imagens do Docker. Este serviço é responsável por hospedar e distribuir as imagens. O registro padrão é o Docker Hub.
-**Docker CLI:** interface de linha de comando (CLI) que permite à pessoa executar ações interagindo com Docker. Docker é executado em uma arquitetura cliente-servidor, o que significa que clientes Docker podem se conectar a hosts do Docker localmente ou remotamente. Tanto cliente quanto host do Docker (Daemon) podem ser executados no mesmo host, ou podem ser executados em hosts diferentes e se comunicar por meio de soquetes ou de uma API RESTful.
-
-1. docker container rm $(docker container ls -aq) --> Apaga e mostra todos os containers.
-2. docker container ls -aq | xargs docker conatiner rm --> Recebe a entrada e apaga
-3. docker container rm $(docker container ls -aq) -------> Apaga todos de uma vez.
-
-## Play with Docker 
-
-**Play with Docker (PWD)** é uma das ferramentas mais fantásticas e subestimadas para quem está aprendendo ou ensinando Docker. Criado por Marcos Nils e Jonathan Leibiusky (e oficialmente apoiado pela Docker), ele é basicamente um playground gratuito baseado na nuvem que roda diretamente no seu navegador.
-
-A grande mágica do PWD é que você ganha acesso instantâneo a um terminal Linux com Docker instalado sem precisar configurar absolutamente nada na sua máquina local.
-Como funciona?
-
-Ao acessar o [site](labs.play-with-docker.com), você faz login com a sua conta do Docker Hub. A plataforma te dá uma sessão com duração máxima de 4 horas.
-
-**Dentro dessa sessão, você pode:**
-
-- **Criar múltiplas instâncias:** Com um clique, você sobe várias máquinas virtuais Alpine Linux independentes.
-- **Simular Clusters (Swarm):** Ele tem suporte nativo para você criar uma estrutura de Swarm, definindo nós Gerenciadores (Managers) e Trabalhadores (Workers) com apenas um clique para testar orquestração.
-- **Acesso a Portas facilitado:** Se você rodar um contêiner que expõe uma porta (como um servidor Nginx na porta 80), o PWD gera automaticamente um link HTTP no topo da tela para você clicar e abrir a aplicação no seu navegador.
-
-**Por que usar no seu material/aula?**
-
-Se você está montando um material ou laboratório sobre Docker, o PWD é um excelente aliado por três motivos principais:
-
-- **Zero Atrito de Instalação:** Se algum aluno/leitor estiver com problemas de espaço em disco, usando um computador corporativo bloqueado, ou tendo conflitos de firewall/WSL no Windows, o PWD elimina essa barreira. O foco fica 100% nos comandos do Docker.
-- **Ambiente Descartável:** É o lugar perfeito para testar comandos "destrutivos" ou baixar imagens gigantescas sem gastar a banda da sua internet local. Acabou o tempo da sessão, tudo é apagado.
-- **Visualizador de Rede Integrado:** Ele mostra de forma visual como as instâncias criadas estão conectadas na mesma rede virtual, o que ajuda muito a explicar conceitos de redes no Docker.
-
-### Jogo no docker - Supermário
-
-`docker container run -it -p 8080:8080 pengbai/docker-supermario`
-
-### Desligando as maquinas
+`docker container ls -aq`
 
 [Docker-install](imagens/docker56.png)
 
-Dominar o ciclo de vida dos contêineres transforma a gestão de infraestrutura, garantindo ambientes isolados e imutáveis. Neste capítulo, cobrimos desde o provisionamento rápido com docker run até a governança do ecossistema através de comandos essenciais de listagem (docker ps -a), inicialização e interrupção (docker start/stop), e limpeza de recursos (docker rm). 
 
-Vimos como auditar aplicações via docker logs, interagir com processos ativos usando docker exec, e como automatizar essa esteira criando scripts de deploy padronizados. Para acelerar esse aprendizado, a plataforma Play with Docker (PWD) se mostrou uma aliada indispensável, fornecendo um laboratório ágil, gratuito e direto no navegador que elimina qualquer barreira inicial de instalação. 
+### Apagar todos os containers de uma vez
 
-Com essa base sólida de comandos e automação, você eliminou o gargalo do **na minha máquina funciona** e está pronto para escalar aplicações com consistência.
+Para limpar o ambiente de laboratório e eliminar todos os contentores (ativos ou parados) instantaneamente, combinamos o comando de remoção com a substituição de comandos do Bash:
 
+`docker container rm $(docker container ls -aq)`
+
+O Bash executa primeiro o comando que está dentro dos parênteses $(...), que gera a lista com todos os IDs existentes. De seguida, injeta essa lista como argumento diretamente no comando `docker container rm -f`, eliminando-os a todos em simultâneo.
+
+[Docker-install](imagens/docker57.png)
+
+## Play with Docker (PWD)
+
+O **Play with Docker (PWD)** é uma das ferramentas mais fantásticas e, por vezes, subestimadas por quem está a aprender ou a ensinar Docker. Criado por Marcos Nils e Jonathan Leibiusky (e oficialmente apoiado pela Docker Inc.), este projeto consiste num playground gratuito baseado na nuvem que corre diretamente no seu navegador de internet (browser).
+
+A grande magia do PWD é permitir o acesso instantâneo a um terminal Linux com o Docker Engine totalmente pré-instalado e configurado, sem necessidade de descarregar ou instalar absolutamente nada na sua máquina local.
+
+### Como Funciona?
+
+Ao aceder ao site [oficial](labs.play-with-docker.com), basta efetuar a autenticação (login) utilizando a sua conta gratuita do Docker Hub. A plataforma disponibiliza imediatamente uma sessão de laboratório com uma duração máxima de **4 horas**.
+
+**Dentro desta sessão, poderá:**
+
+- **Criar múltiplas instâncias:** Com um simples clique, pode instanciar várias máquinas virtuais independentes baseadas em Alpine Linux.
+- **Simular Clusters (Docker Swarm):** Possui suporte nativo para criar uma infraestrutura Swarm, definindo nós Gestores (Managers) e Trabalhadores (Workers) de forma automatizada para testar a orquestração de serviços.
+- **Acesso facilitado a portas:** Se executar um contentor que exponha uma porta pública (como um servidor Nginx na porta 80), o PWD gera automaticamente um link HTTP no topo do ecrã para que possa clicar e abrir a aplicação noutra aba do seu navegador.
+
+Se está a estruturar um manual técnico ou a preparar um laboratório prático, o PWD é um aliado excecional por três motivos principais:
+
+- **Zero Atrito de Instalação:** Se algum aluno ou leitor tiver limitações de espaço em disco, estiver a utilizar um computador corporativo bloqueado pelas políticas de TI, ou enfrentar conflitos de rede com o WSL2 no Windows, o PWD elimina essa barreira. O foco da aula passa a ser 100% a aprendizagem dos comandos do Docker.
+- **Ambiente Totalmente Descartável:** É o ecossistema perfeito para testar comandos complexos ou transferir imagens de grande dimensão sem consumir a largura de banda da sua internet local. Assim que o temporizador da sessão chega ao fim, tudo é destruído e limpo de forma segura.
+- **Visualizador de Rede Integrado:** A plataforma exibe de forma gráfica como as diferentes instâncias criadas estão ligadas na mesma rede virtual interna, o que facilita imenso a explicação visual de conceitos de arquitetura de redes e sub-redes no Docker.
+
+> Lembre-se de que, por ser um ambiente efémero e descartável, nenhum dado é guardado após o encerramento da sessão. Ficheiros de configuração importantes ou Dockerfiles desenvolvidos lá dentro devem ser copiados para fora ou guardados num repositório Git antes do fim do tempo limite.
+
+### Laboratório Prático: Executar o Super Mário no Docker
+
+Para consolidar os conhecimentos adquiridos sobre a execução de contentores e o mapeamento de portas, vamos correr um projeto lúdico: o jogo clássico do Super Mário a correr dentro de um contentor Docker.
+
+Execute o seguinte comando no terminal da sua máquina hospedeira:
+
+`docker container run -d -p 8080:8080 --name mario pengbai/docker-supermario`
+
+> `-d` (Detached). Isto permite que o jogo corra em segundo plano, libertando imediatamente o seu terminal para que possa continuar a trabalhar enquanto o servidor do jogo está ativo.
+
+## Desligar as Máquinas
+
+Após concluir os testes e os exercícios do dia, é uma excelente prática de administração de sistemas limpar o ambiente de contentores e desligar a infraestrutura de máquinas virtuais (Vagrant) para libertar os recursos de hardware (RAM e CPU) do seu computador.
+
+Siga estes passos sequenciais: 
+
+1. Antes de desligar a máquina virtual, remova o contentor que ficou a correr em segundo plano: `docker container rm -f mario`
+
+2. Se ainda estiver ligado dentro da máquina `master` (ou de qualquer outro nó), termine a sessão SSH para regressar ao terminal do seu computador local: `exit`
+
+3. Navegue até à pasta no seu computador local onde se encontra o ficheiro Vagrantfile do projeto e execute o comando de encerramento: `vagrant halt`
+
+[Docker-install](imagens/docker58.png)
+
+Pode ver também pela interface grafica do virt-manager
+
+[Docker-install](imagens/docker59.png)
+
+> Se no futuro quiser apagar completamente as máquinas virtuais do seu disco rígido para libertar espaço, o comando a utilizar na sua máquina local será o `vagrant destroy -f`. No entanto, o `vagrant halt` apenas as desliga (equivalente a fazer Shut Down), preservando todos os ficheiros e instalações que realizámos para a próxima aula.
+
+## Conclusão do Capítulo
+
+Dominar o ciclo de vida dos containers transforma radicalmente a gestão de infraestrutura, garantindo ambientes isolados, previsíveis e imutáveis. Neste capítulo, cobrimos desde o aprovisionamento rápido com o comando `docker container run` até à governação estrita do ecossistema através de comandos essenciais de listagem `(docker container ls -a)`, inicialização e interrupção `(docker start/stop)`, e eliminação de recursos obsoletos `(docker rm)`.
+
+Vimos como auditar aplicações em tempo real através do `docker container logs`, como interagir com processos ativos utilizando o `docker container exec`, e como automatizar este fluxo criando scripts de implementação (deploy) padronizados. Para acelerar esta curva de aprendizagem, a plataforma **Play with Docker (PWD)** mostrou-se uma aliada indispensável, fornecendo um laboratório ágil, gratuito e direto no navegador que elimina qualquer barreira inicial ou atrito de instalação.
+
+Vimos também três abordagens equivalentes no Linux para limpar o laboratório e eliminar todos os contentores de uma só vez:
+
+1. Substituição de comandos clássica (Recomendada)
+
+`docker container rm -f $(docker container ls -aq)`
+
+2. Utilizando pipes e o utilitário xargs do Linux
+
+`docker container ls -aq | xargs docker container rm -f`
+
+3. Sintaxe moderna direta (Equivalente à Opção 1)
+
+`docker rm -f $(docker ps -aq)`
+
+Com esta base sólida de comandos e automação, eliminou em definitivo o velho estrangulamento do **"na minha máquina funciona"** e está finalmente pronto para escalar aplicações com total consistência.
+
+## Glossário: Terminologia Essencial do Docker
+
+Para garantir o sucesso no exame DCA e alinhar a comunicação técnica, recapitulemos os conceitos fundamentais:
+
+- **Contentor (Container)**: Ambiente isolado, seguro e leve que possui a sua própria árvore de processos, interfaces de rede e utilizadores, partilhando o mesmo kernel do sistema operativo hospedeiro. É a instância viva criada a partir de uma imagem.
+- **Imagem**: Pacote executável e imutável que contém rigorosamente tudo o que é necessário para correr uma aplicação (código fonte, executáveis, variáveis de ambiente, ficheiros de configuração e bibliotecas).
+- **Dockerfile**: Ficheiro de texto simples contendo a sequência de instruções lógicas e ordenadas para automatizar a construção de uma imagem Docker.
+- **Tag**: O identificador de versão de uma imagem (ex: ubuntu:24.04). Cada imagem possui uma ou mais tags associadas.
+- **Docker Hub**: O registo público oficial e centralizado da Docker Inc., onde a comunidade e as empresas alojam e partilham milhões de imagens.
+- **Docker Engine**: O motor/sistema central de virtualização que permite criar, executar e gerir os contentores Docker.
+- **Docker Registry**: Serviço responsável por armazenar, alojar e distribuir imagens Docker. Pode ser público (como o Docker Hub) ou privado (como o Harbor).
+- **Docker CLI / Arquitetura**: Interface de Linha de Comandos que permite ao utilizador interagir com o Docker. O Docker opera numa arquitetura cliente-servidor: o Cliente (CLI) envia ordens ao Servidor (o processo de fundo chamado Docker Daemon), podendo comunicar localmente através de sockets Unix ou remotamente via API RESTful.
+
+## Índice do Conteúdo Oficial
+
+Este manual foi estruturado com base nos requisitos oficiais da certificação Docker Certified Associate (DCA). Ao longo do nosso percurso, iremos abordar os seguintes módulos práticos:
+
+- 📦 Docker-DCA 01: Instalação, Arquitetura e Fundamentos (Concluído)
+- 🖥️ Docker-DCA 02: Comandos Estruturais, Ciclo de Vida e Imagens
+- 🛠️ Docker-DCA 03: Docker Images – Melhores Práticas e Multistage Build
+- 💾 Docker-DCA 04: Persistência de Dados com Volumes
+- 🔌 Docker-DCA 05: Plugins de Volumes e Armazenamento Distribuído
+- 🌐 Docker-DCA 06: Engenharia de Redes no Docker (Networking)
+- 🎼 Docker-DCA 07: Orquestração Local com Docker Compose (docker-compose)
+- 🤝 Docker-DCA 08: Algoritmo de Consenso Raft e Introdução ao Docker Swarm
+- 🚀 Docker-DCA 09: Docker Swarm – Registos, Services e Tasks
+- 🗺️ Docker-DCA 10: Docker Swarm – Gestão Avançada de Stacks
+- 📊 Docker-DCA 11: Monitorização Avançada (Prometheus + Node Exporter + Grafana + cAdvisor)
+- 🧰 Docker-DCA 12: Ferramentas de Ecossistema (PWD, Swarmpit, Portainer, Harbor e Docker Machine)
+- ☸️ Docker-DCA 13: Transição e Fundamentos de Kubernetes
 
 **Bons estudos!**
-
-### Conteúdo Official
-
-- Docker-DCA 01 - Instalação e Fundamentos
-- Docker-DCA 02 - Comandos Docker e Imagens
-- Docker-DCA 03 - Docker Images - Melhores Práticas e Multistage Build
-- Docker-DCA 04 - Volumes
-- Docker-DCA 05 - Volume Plugins
-- Docker-DCA 06 - Networking
-- Docker-DCA 07 - Compose (docker-compose)
-- Docker-DCA 08 - Raft Consensus & Docker Swarm
-- Docker-DCA 09 - Docker Swarm - Registry, Services e Tasks
-- Docker-DCA 10 - Docker Swarm - Stacks
-- Docker-DCA 11 - Monitoramento (Prometheus + Node Exporter + Grafana + Cadvisor)
-- Docker-DCA 12 - Tools (PwD, Swarmpit, Portainer, Harbor e Docker Machine)
-- Docker-DCA 13 - Kubernetes
