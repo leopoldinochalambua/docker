@@ -89,17 +89,15 @@ Recursos de Network utilizados pelo docker:
 
 ![Networking](resources/04networking.png)
 
-
-* **veth**: Virtual Ethernet
-* **bridge**: Interface Bridge
-* **iptables**: Regras de isolamento de redes
-
+- **veth**: Virtual Ethernet
+- **bridge**: Interface Bridge
+- **iptables**: Regras de isolamento de redes
 
 ## Administrando Redes
 
 Por padrão quando um container é criado ele não publica nenhuma de suas portas para o mundo externo. Para disponibilizar uma porta para serviços fora do ambiente Docker ou para containers que não estejam conectados a mesma rede, utilizamos a flag **--publish** ou **-p**. Isso cria uma regra de firewall que mapeia uma porta de container para uma porta do host.
 
-Quando executamos um container, podemos definir a publicação de uma ou mais portas através da opção -p hostaddress:hostport:containerport. Para expor as portas em qualquer endereço utilizamos o hostaddress 0.0.0.0.
+Quando executamos um container, podemos definir a publicação de uma ou mais portas através da opção `-p hostaddress:hostport:containerport`. Para expor as portas em qualquer endereço utilizamos o hostaddress 0.0.0.0.
 
 Vamos subir nosso container webserver expondo a porta para a nossa rede
 
@@ -217,7 +215,6 @@ Remova o container `sem-rede`
 $ docker container rm -f sem-rede
 ```
 
-
 ### Macvlan
 
 É a rede onde utilizamos os recursos de VLAN para fazer a separação lógica da rede, através dela podemos fornecer endereços IP para os containers que serão roteáveis para a rede física.
@@ -232,7 +229,6 @@ $ docker container rm -f sem-rede
 
 _Falaremos de redes overlay no assunto Docker Swarm Cluster_ 
 
-
 ## Conectando Containers
 
 Para conectarmos os containers e os serviços utilizamos os recursos de redes.
@@ -245,17 +241,21 @@ $ docker container run -dit --name container2 -h cliente debian
 ```
 
 Verifique o endereço IP dos containers
+
 ```bash
 $ docker container exec container1 ip -c a show eth0
 $ docker container exec container2 ip -c a show eth0
 ```
+
 Faça um teste de conectividade entre os containers através do comando ping 
+
 ```bash
 $ docker container exec container1 ping -c4 172.17.0.3
 $ docker container exec container2 ping -c4 172.17.0.2
 ```
 
 Veja que os containers não conseguem se comunicar por nome, a conexão por nome é possível apenas para o container interno
+
 ```bash
 $ docker container exec container1 ping -c4 cliente
 $ docker container exec container1 ping -c4 servidor
@@ -286,6 +286,7 @@ $ docker container rm -f container1 container2
 A `User-defined Bridge` é um tipo de rede superior a rede `default bridge network`
 
 Este tipo de rede tem as seguintes características
+
 * Fornecem resolução de DNS automática entre containers da mesma rede
 * Fornecem melhor isolamento pois precisamos indicar qual rede vamos nos conectar
 * Containers podem ser conectados e desconectados 'on the fly' 
@@ -294,28 +295,33 @@ Este tipo de rede tem as seguintes características
 Para criar uma rede bridge podemos executar o comando `docker network create --driver bridge`
 
 Vamos criar uma rede e personalizar a mesma
+
 ```bash
 $ docker network create --driver bridge --subnet 172.20.0.0/16 dca-lan
 $ docker network ls 
 ``` 
 
 Podemos inspecionar a rede através do parâmetro `inspect`
+
 ```bash
 $ docker network inspect dca-lan
 ```
 
 Agora que criamos nossa rede, vamos criar dois containers que estarão utilizando esta rede
+
 ```bash
 $ docker container run -dit --name container1 -h servidor --network dca-lan debian
 $ docker container run -dit --name container2 -h cliente --network dca-lan debian
 ``` 
 
 Podemos verificar agora a rede através do `inspect` e verificar os endereços IP dos containers
+
 ```bash
 $ docker network inspect dca-lan
 ```
 
 Podemos também testar a conectividade entre os containers através do comando ping
+
 ```bash
 $ docker container exec container1 ping -c4 cliente
 $ docker container exec container1 ping -c4 container2
@@ -327,6 +333,7 @@ $ docker container exec container2 ping -c4 container1
 Com isso podemos ver que a rede bridge fornece dns tanto para o hostname quanto para o nome do container.
 
 Podemos também conectar e desconectar containers através do parâmetro `disconnect`
+
 ```bash
 $ docker network disconnect dca-lan container2
 $ docker network inspect dca-lan
@@ -334,6 +341,7 @@ $ docker container exec container1 ping -c4 container2
 ``` 
 
 E também podemos conectar novamente através do parâmetro `connect` e inclusive indicando o endereço IP que desejamos através do parâmetro `--ip`
+
 ```bash
 $ docker network connect --ip 172.20.0.200 dca-lan container2
 $ docker network inspect dca-lan
@@ -341,10 +349,10 @@ $ docker container exec container1 ping -c4 container2
 ``` 
 
 Remova os containers
+
 ```bash
 $ docker container rm -f container1 container2
 ```
-
 
 ### DNS
 
@@ -360,7 +368,9 @@ $ docker container exec -it container2 cat /etc/resolv.conf
 $ docker container rm -f container1 container2
 ``` 
 
-Podemos também configurar estas opções como padrão no arquivo `/etc/docker/daemon.json`
+Podemos também configurar estas opções como padrão no arquivo 
+`/etc/docker/daemon.json`
+
 ```json
 {
     "dns": ["8.8.8.8", "8.8.4.4"]
