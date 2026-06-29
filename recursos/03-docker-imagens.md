@@ -2,23 +2,23 @@
 
 ## Introduçao
 
-Se os contentores são os processos vivos e dinâmicos em execução no nosso servidor, as imagens Docker são o DNA, a receita e o alicerce imutável de todo este ecossistema. Compreender o funcionamento interno das imagens é a chave fundamental para perceber por que razão o Docker é uma tecnologia tão rápida, eficiente e consistente.
+Se os **containers** são processos vivos e dinâmicos em execução no nosso servidor, as imagens **Docker** são o DNA, a receita e o alicerce imutável de todo este ecossistema. Compreender o funcionamento interno das imagens é a chave fundamental para perceber por que razão o Docker é uma tecnologia tão rápida, eficiente e consistente.
 
-Ao contrário das pesadas imagens de discos utilizadas pelas Máquinas Virtuais tradicionais, uma imagem Docker não contém um sistema operativo completo e isolado com o seu próprio kernel. Em vez disso, ela é um pacote executável, leve e autónomo, que reúne exclusivamente os binários, as bibliotecas, as variáveis de ambiente e os ficheiros de configuração necessários para que a sua aplicação funcione de forma idêntica em qualquer computador do mundo.
+Ao contrário das pesadas imagens de discos utilizadas pelas Máquinas Virtuais tradicionais, uma imagem Docker não contém um sistema operativo completo e isolado com o seu próprio kernel. _Em vez disso, ela é um pacote executável, leve e autónomo, que reúne exclusivamente os binários, as bibliotecas, as variáveis de ambiente e os ficheiros de configuração necessários para que a sua aplicação funcione de forma idêntica em qualquer computador do mundo_.
 
 ## A Natureza Imutável das Imagens
 
-Uma das características mais importantes que precisa de fixar para a sua jornada de engenharia e certificação é a imutabilidade.
+Uma das características mais importantes que precisa de fixar para a sua jornada de engenharia e certificação é a **imutabilidade**.
 
 > Uma vez construída (build), uma imagem Docker nunca mais muda. Se precisar de atualizar uma linha de código da sua aplicação ou instalar um novo pacote de segurança, o fluxo correto não é modificar a imagem existente, mas sim gerar uma nova versão da imagem (uma nova tag). É esta imutabilidade que elimina em definitivo o risco de desconfiguração de ambientes e garante que o código testado em laboratório se comportará exatamente da mesma forma quando for implementado em produção.
 
 ## O que é um Docker Registry?
 
-Um **Docker Registry (Registo Docker)** é um sistema centralizado de armazenamento e distribuição de imagens. Pense nele como uma grande biblioteca digital onde pode descarregar imagens oficiais validadas, encontrar soluções prontas partilhadas pela comunidade ou alojar e gerir as suas próprias criações.
+Um **Docker Registry** é um sistema centralizado de armazenamento e distribuição de imagens. Pense nele como uma grande biblioteca digital onde pode descarregar imagens oficiais validadas, encontrar soluções prontas partilhadas pela comunidade ou alojar e gerir as suas próprias criações.
 
-Os registos dividem-se fundamentalmente em duas categorias:
+**Os registos dividem-se fundamentalmente em duas categorias:**
 
-- **Docker Hub (Público):** É o registo público predefinido do motor Docker e a maior biblioteca de imagens de contentores do mundo. Sempre que executa um comando docker image pull sem especificar um endereço de servidor, o Docker recorre automaticamente ao Docker Hub.
+- **Docker Hub:** É o registo público predefinido do motor Docker e a maior biblioteca de imagens de container do mundo. Sempre que executa um comando `docker image pull` sem especificar um endereço de servidor, o Docker recorre automaticamente ao **Docker Hub**.
 - **Registos Privados / Corporativos:** No mundo profissional, as empresas evitam expor as suas propriedades intelectuais publicamente. Para armazenar e distribuir imagens de aplicações proprietárias com total segurança e controlo de acessos, utilizam registos privados locais ou soluções de nuvem geridas, tais como:
 	- Amazon ECR (Elastic Container Registry)
 	- Google Artifact Registry (o sucessor do GCR)
@@ -32,18 +32,18 @@ Os registos dividem-se fundamentalmente em duas categorias:
 
 - **Alojamento de Imagens Docker:** Repositórios públicos ilimitados gratuitos e suporte para repositórios privados.
 - **Autenticação e Gestão de Utilizadores:** Controlo de acessos, organizações e equipas.
-- **Construções Automatizadas (Automated Builds):** Automatização do processo de construção de imagens através de gatilhos (triggers / webhooks).
-- **Integração CI/CD Nativa:** Ligação direta com plataformas como o GitHub e o Bitbucket para iniciar builds automáticos a cada commit.
+- **Construções Automatizadas:** Automatização do processo de construção de imagens através de gatilhos (triggers / webhooks).
+- **Integração CI/CD Nativa:** Ligação direta com plataformas como o `GitHub` e o `Bitbucket` para iniciar builds automáticos a cada commit.
 
-### Criando uma conta no Dockerhub
+### Conta no Dockerhub
 
 Aceda ao endereço [oficial](hub.docker.com) e clique em **Sign Up** para iniciar o registo.
 
 ![Registro](resources/02dockerhub1.png)
 
-Preencha o formulário com os seus dados (Docker ID, e-mail e palavra-passe) e clique em Continue.
+Preencha o formulário com os seus dados (Docker ID, e-mail e palavra-passe) e clique em **Continue**.
 
-Confirme a ativação da conta através do fluxo enviado para o seu e-mail de registo e, de seguida, efetue a autenticação na plataforma utilizando o botão Sign In.
+Confirme a ativação da conta através do fluxo enviado para o seu e-mail de registo e, de seguida, efetue a autenticação na plataforma utilizando o botão **Sign In**.
 
 ![login](resources/02dockerhub2.png)
 
@@ -56,7 +56,7 @@ Execute o comando `docker login`, especificando o seu nome de utilizador criado:
 docker login -u <usuario_dockerhub>
 ```
 
-Assim que a autenticação é bem-sucedida, o Docker cria um token codificado localmente. Pode verificar a existência e a estrutura deste ficheiro de autorização executando:
+Assim que a autenticação é bem-sucedida, o Docker cria um token codificado localmente. Pode verificar a existência e a estrutura deste ficheiro de autorização executando: `cat ~/.docker/config.json`
 
 O output esperado será um objeto JSON semelhante a este:
 
@@ -70,7 +70,9 @@ Para remover as credenciais locais da máquina hospedeira e encerrar de forma se
 docker logout
 ```
 
-> Em ambientes corporativos ou exames de certificação, evite digitar a palavra-passe diretamente na consola. A boa prática recomenda a utilização de um **Access Token (PAT)** gerado no portal do Docker Hub, ou o envio da senha através da entrada padrão para evitar que fique registada no histórico do Bash: `cat meu_token.txt | docker login -u utilizador --password-stdin`.
+> Em ambientes corporativos ou exames de certificação, evite digitar a palavra-passe diretamente na consola. A boa prática recomenda a utilização de um **Access Token (PAT)** gerado no portal do Docker Hub, ou o envio da senha através da entrada padrão para evitar que fique registada no histórico do Bash: 
+
+`cat meu_token.txt | docker login -u utilizador --password-stdin`
 
 ## Docker Image
 
@@ -78,10 +80,10 @@ Uma imagem Docker é um pacote de software leve, autónomo e executável que inc
 
 Ao analisar a anatomia de uma imagem, deve ter em conta dois fatores cruciais:
 
-- Especificidade de Plataforma: As imagens Docker são específicas tanto do sistema operativo (SO) como da arquitetura da CPU (como amd64, arm64/v8, etc.) para as quais foram construídas. Não é possível executar nativamente uma imagem construída para a arquitetura clássica da Intel/AMD num servidor com processador ARM sem emulação.
-- Composição Modular: Uma imagem Docker não é um ficheiro único, grande e monolítico (como um ficheiro .iso ou .zip). Ela é construída de forma modular através de uma série de camadas sobrepostas e armazenada de forma eficiente num registo.
+- **Especificidade de Plataforma**: As imagens Docker são específicas tanto do sistema operativo (SO) como da arquitetura da CPU (como amd64, arm64/v8, etc.) para as quais foram construídas. Não é possível executar nativamente uma imagem construída para a arquitetura clássica da Intel/AMD num servidor com processador ARM sem emulação.
+- **Composição Modular**: Uma imagem Docker não é um ficheiro único, grande e monolítico (como um ficheiro `.iso` ou `.zip`). Ela é construída de forma modular através de uma série de camadas sobrepostas e armazenada de forma eficiente num registo.
 
-## Arquitetura de Camadas (Layers)
+## Arquitetura de Camadas - Layers
 
 Uma imagem é composta por uma pilha de camadas sobrepostas de leitura única (Read-Only). Cada instrução válida que escrevemos num Dockerfile (tais como FROM, COPY ou RUN) gera uma nova camada imutável sobre a anterior.
 
@@ -93,48 +95,41 @@ Uma imagem é composta por uma pilha de camadas sobrepostas de leitura única (R
 
 Esta arquitetura traz duas vantagens revolucionárias para a infraestrutura:
 
-- Eficiência Extrema (Cache): Quando altera uma instrução no seu Dockerfile e executa uma nova construção (build), o Docker é inteligente: ele reutiliza a cache de todas as camadas anteriores que não sofreram alterações e apenas recompila a camada modificada e as que se seguem. Isto torna o processo de desenvolvimento e compilação incrivelmente rápido.
-- Partilha de Recursos (Reutilização): Se descarregar dez aplicações diferentes no seu servidor, mas todas elas utilizarem a instrução inicial FROM ubuntu:22.04, essa camada base do Ubuntu é descarregada e armazenada apenas uma vez no disco rígido do servidor hospedeiro. Todas as dez imagens partilham a mesma base, economizando gigabytes de espaço de armazenamento.
+- **Eficiência Extrema**: Quando altera uma instrução no seu Dockerfile e executa uma nova construção, o Docker é inteligente: ele reutiliza a cache de todas as camadas anteriores que não sofreram alterações e apenas recompila a camada modificada e as que se seguem. Isto torna o processo de desenvolvimento e compilação incrivelmente rápido.
+- **Partilha de Recursos**: Se descarregar dez aplicações diferentes no seu servidor, mas todas elas utilizarem a instrução inicial FROM `ubuntu:22.04`, essa camada base do Ubuntu é descarregada e armazenada apenas uma vez no disco rígido do servidor hospedeiro. Todas as dez imagens partilham a mesma base, economizando gigabytes de espaço de armazenamento.
 
 ## A Camada Base 
 
 Esta é a fundação de toda a estrutura da sua imagem, sendo obrigatoriamente especificada pela primeira instrução do Dockerfile: o comando FROM. Dependendo da estratégia do projeto, a camada base pode ser:
 
-- Um Sistema Operativo Mínimo: Como o ubuntu:22.04 ou o alpine (uma distribuição Linux ultra-leve com apenas cerca de 5 MB).
-- Um Ambiente de Execução Oficial: Como o python:3.9-slim, node:20-alpine ou openjdk:17, que já trazem o Linux e as linguagens configuradas pelas equipas oficiais.
-- Uma Aplicação Pronta: Como o nginx ou postgres, ideal para quando só precisamos de injetar ficheiros de configuração ou código sobre um serviço já existente.
+- **Um Sistema Operativo Mínimo**: Como o `ubuntu:22.04` ou o `alpine` (uma distribuição Linux ultra-leve com apenas cerca de 5 MB).
+- **Um Ambiente de Execução Oficial**: Como o `python:3.9-slim`, `node:20-alpine` ou `openjdk:17`, que já trazem o Linux e as linguagens configuradas pelas equipas oficiais.
+- **Uma Aplicação Pronta**: Como o `nginx` ou `postgres`, ideal para quando só precisamos de injetar ficheiros de configuração ou código sobre um serviço já existente.
 
 ![Docker Image](resources/02imagem.png)
 
-A principal diferença estrutural entre um contentor e uma imagem resume-se à camada superior de leitura e escrita (Read-Write Layer). Enquanto todas as camadas da imagem são estáticas e de leitura única (Read-Only), o Docker adiciona uma fina camada dinâmica no topo assim que o contentor é iniciado.
+A principal diferença estrutural entre um **container** e uma **imagem** resume-se à camada superior de leitura e escrita (Read-Write Layer). Enquanto todas as camadas da imagem são estáticas e de leitura única (Read-Only), o Docker adiciona uma fina camada dinâmica no topo assim que o container é iniciado.
 
-Qualquer ação realizada dentro do contentor em execução — como criar um novo ficheiro, instalar um utilitário de diagnóstico ou modificar uma configuração — é armazenada única e exclusivamente nesta camada superior gravável.
+Qualquer ação realizada dentro do container em execução — como criar um novo ficheiro, instalar um utilitário de diagnóstico ou modificar uma configuração — é armazenada única e exclusivamente nesta camada superior gravável.
 
-- Persistência Efémera: Se o contentor for eliminado, a sua camada gravável superior é completamente destruída e os dados gerados ali perdem-se.
-- Preservação da Base: A imagem subjacente permanece rigorosamente intacta e inalterada no disco do servidor, pronta para gerar novos contentores limpos a qualquer momento.
+- **Persistência Efémera**: Se o conatiner for eliminado, a sua camada gravável superior é completamente destruída e os dados gerados ali perdem-se.
+- **Preservação da Base**: A imagem subjacente permanece rigorosamente intacta e inalterada no disco do servidor, pronta para gerar novos containers limpos a qualquer momento.
 
 ![Docker Images e Containers](resources/02containers.png)
 
-Para compreender o impacto financeiro e técnico desta arquitetura no armazenamento de um centro de dados (Data Center), analisemos o seguinte cenário prático:
+Para compreender o impacto financeiro e técnico desta arquitetura no armazenamento de um Data Center, analisemos o seguinte cenário prático:
 
 Imagine que descarregou a imagem oficial ubuntu:18.04, que pesa exatamente 200 MB no disco.
 
-Cenário com 1 Container: Se iniciar um contentor a partir desta imagem e ele gerar 50 MB de dados específicos (logs, ficheiros temporários, código) na sua camada gravável, o espaço total consumido no servidor será de:
+Cenário com 1 Container: Se iniciar um container a partir desta imagem e ele gerar 50 MB de dados específicos (logs, ficheiros temporários, código) na sua camada gravável, o espaço total consumido no servidor será de:
 
-`200 MB (Imagem Base) + 50 MB (Contentor 1)} = 250 MB`
+`200 MB (Imagem Base) + 50 MB (container 1) = 250 MB`
 
-Cenário com 10 Contentores Simultâneos: Se instanciar 10 contentores idênticos a partir dessa mesmíssima imagem, e cada um deles gerar os seus próprios 50 MB de dados isolados, a magia da partilha de camadas atua. O Docker não duplica os 200 MB da imagem base. Todos os 10 contentores partilham a mesma base imutável de forma síncrona. O cálculo do espaço total consumido será:
+Cenário com 10 containers Simultâneos: Se instanciar 10 containers idênticos a partir dessa mesmíssima imagem, e cada um deles gerar os seus próprios 50 MB de dados isolados, a magia da partilha de camadas atua. O Docker não duplica os 200 MB da imagem base. Todos os 10 containers partilham a mesma base imutável de forma síncrona. O cálculo do espaço total consumido será:
 
 `200 MB (Imagem Base Partilhada) + (10 x 50 MB das camadas indi`
 
 > Se tentasse replicar exatamente o mesmo cenário de 10 ambientes isolados utilizando Máquinas Virtuais (VMs) tradicionais, o consumo de recursos seria exponencialmente superior. Como cada VM exige a instalação independente de todo o sistema operativo, dos drivers e da alocação rígida de disco virtuais, o mesmo laboratório consumiria facilmente entre 20 GB a 40 GB de armazenamento, além do desperdício severo de memória RAM e processamento (CPU).
-
-
-```
-Um ponto interessante é que em um cenário onde temos 1 container com a imagem `ubuntu:18.04` por exemplo, ocuparia `200MB` ( estamos considerando este tamanho para a imagem citada) somados a quantidade de dados específicos deste container ( vamos considerar `50MB` para este exemplo) totalizando `250MB`. o mesmo caso com 10 containers serão utilizados os `200MB` da imagem somados aos 50MB de cada container em execução, pois suas camadas readonly é compartilhada, totalizando assim `750MB` no total. 
-```
-
-> O mesmo cenário em máquinas virtuais seria exponencialmente maior, uma vez que precisamos instalar todo o sistema operacional e parametrizar cada máquina individualmente.
 
 ## Principais Comandos de Gestão de Imagens 
 
@@ -155,7 +150,9 @@ A tabela abaixo resume as instruções estruturais que serão estudadas na prát
 
 Vamos avançar para a vertente prática de auditoria, exportação e criação de imagens através do terminal.
 
-1. Listar e Auditar as Camadas de uma Imagem
+Para essa sessão vamos usar a maquina node02.
+
+1. **Listar e Auditar as Camadas de uma Imagem**
 
 Primeiro, liste as imagens locais e verifique o histórico de instruções e comandos que foram utilizados originalmente para construir a imagem do Debian:
 
@@ -173,52 +170,55 @@ docker image inspect debian
 ```
 _O comando **docker image inspect** exibe informações detalhadas de uma imagem_
 
-2. Criar uma Imagem a partir de um Contentor (commit)
+2. **Criar uma Imagem a partir de um container**
+
 Vamos simular a criação de uma imagem personalizada a partir de um cenário real: alterando um contentor ativo. Primeiro, instanciamos o contentor e instalamos o servidor web Nginx no seu interior:
 
-```bash
-# Cria e inicia o contentor Debian
-docker container run -dit --name servidor-debian debian
+**Cria e inicia o contentor Debian**
 
-# Atualiza os repositórios internos do contentor
-docker container exec servidor-debian apt-get update
+`docker container run -dit --name servidor-debian debian`
 
-# Instala o servidor Nginx dentro do contentor
-docker container exec servidor-debian apt-get install nginx -y
-```
+**Atualiza os repositórios internos do contentor**
 
-Para registar o estado atual deste contentor e transformá-lo numa nova imagem estática, utilizamos o subcomando `commit`:
+`docker container exec servidor-debian apt-get update`
 
-```bash
-docker container commit servidor-debian webserver-nginx
-# Valide se a nova imagem foi criada localmente
-docker image ls
-```
-_O comando docker container commit cria uma imagem a partir de alterações manuais num contentor vivo. Embora útil para auditorias de emergência, este procedimento não é o recomendado para o dia a dia em produção, uma vez que gera imagens sem rastreabilidade e difíceis de auditar. Mais à frente aprenderá a fazer isto da forma correta e automatizada utilizando um ficheiro Dockerfile_.
+**Instala o servidor Nginx dentro do contentor**
 
-3. Exportar e Importar Imagens via Ficheiros .tar (save e load)
+`docker container exec servidor-debian apt-get install nginx -y`
+
+Para registar o estado atual deste container e transformá-lo numa nova imagem estática, utilizamos o subcomando `commit`:
+
+`docker container commit servidor-debian webserver-nginx`
+
+**Valide se a nova imagem foi criada localmente**
+
+`docker image ls`
+
+O comando `docker container commit` cria uma imagem a partir de alterações manuais num container vivo. Embora útil para auditorias de emergência, este procedimento não é o recomendado para o dia a dia em produção, uma vez que gera imagens sem rastreabilidade e difíceis de auditar. Mais à frente aprenderá a fazer isto da forma correta e automatizada utilizando um ficheiro `Dockerfile`.
+
+3. **Exportar e Importar Imagens via Ficheiros .tar (save e load)**
+
 Caso necessite de mover uma imagem para um servidor que não tem acesso à internet (ambiente air-gapped), pode exportá-la para um ficheiro compactado utilizando a opção save:
 
-```bash
-# Exporta a imagem para um ficheiro tar
-docker image save webserver-nginx -o imagem-webserver-nginx.tar
+**Exporta a imagem para um ficheiro tar, de seguida verifiva o tamanho do ficheiro gerado no disco**
 
-# Verifica o tamanho do ficheiro gerado no disco
-du -sh imagem-webserver-nginx.tar
-```
+`docker image save webserver-nginx -o imagem-webserver-nginx.tar`
 
-Para demonstrar a eficácia do processo, vamos simular uma limpeza completa, removendo o contentor de origem e a imagem que acabámos de criar:
+`du -sh imagem-webserver-nginx.tar`
 
-```bash
-# Remove o contentor de forma forçada
-docker container rm -f servidor-debian
+Para demonstrar a eficácia do processo, vamos simular uma limpeza completa, removendo o container de origem e a imagem que acabámos de criar:
 
-# Remove a imagem local
-docker image rm webserver-nginx
+**Remove o contentor de forma forçada**
 
-# Valide que a imagem desapareceu do sistema
-docker image ls
-```
+`docker container rm -f servidor-debian`
+
+**Remove a imagem local**
+
+`docker image rm webserver-nginx`
+
+**Valide que a imagem desapareceu do sistema**
+
+`docker image ls`
 
 Agora, para restaurar a imagem a partir do ficheiro guardado em disco, utilizamos o subcomando load:
 
@@ -230,7 +230,8 @@ docker image load -i imagem-webserver-nginx.tar
 docker image ls
 ```
 
-4. Validar o Funcionamento e Limpeza Total
+4. **Validar o Funcionamento e Limpeza Total**
+
 Para garantir que a imagem importada mantém todas as modificações (incluindo o Nginx instalado), instancie um novo contentor a partir dela:
 
 ```bash
@@ -246,7 +247,7 @@ docker container rm -f $(docker container ls -aq)
 docker container ls
 ```
 
->O comando docker container ls -aq é executado dentro de uma subshell $(...). Ele gera uma lista contendo única e exclusivamente os IDs hexadecimais de todos os contentores do sistema. Essa lista é injetada diretamente como argumento no docker container rm -f, forçando a eliminação em massa imediata.
+> O comando docker container ls -aq é executado dentro de uma subshell $(...). Ele gera uma lista contendo única e exclusivamente os IDs hexadecimais de todos os contentores do sistema. Essa lista é injetada diretamente como argumento no docker container rm -f, forçando a eliminação em massa imediata.
 
 ## Dockerfile
 
@@ -278,18 +279,18 @@ O arquivo de Dockerfile não é case-sensitive, no entanto por convenção utili
 
 Para dominar a governança de imagens, é vital compreender o comportamento exato de cada diretiva no sistema de camadas:
 
-- FROM: Inicializa um novo estágio de compilação (build stage) e define a Imagem Pai obrigatória para as instruções subsequentes. Qualquer Dockerfile válido tem de começar com esta instrução.
-- COPY: Copia ficheiros ou diretórios da máquina hospedeira (origem local) e adiciona-os ao sistema de ficheiros da imagem do contentor (destino).
-- ADD: Semelhante ao COPY, mas possui superpoderes adicionais: permite que a origem seja uma URL remota (faz o download do ficheiro durante o build) e descompacta automaticamente ficheiros de arquivo locais em formatos reconhecidos (como .tar.gz).
-- RUN: Executa comandos dentro do ambiente de compilação, criando uma nova camada imutável no topo da imagem atual.
+- **FROM**: Inicializa um novo estágio de compilação (build stage) e define a Imagem Pai obrigatória para as instruções subsequentes. Qualquer Dockerfile válido tem de começar com esta instrução.
+- **COPY**: Copia ficheiros ou diretórios da máquina hospedeira (origem local) e adiciona-os ao sistema de ficheiros da imagem do contentor (destino).
+- **ADD**: Semelhante ao COPY, mas possui superpoderes adicionais: permite que a origem seja uma URL remota (faz o download do ficheiro durante o build) e descompacta automaticamente ficheiros de arquivo locais em formatos reconhecidos (como .tar.gz).
+- **RUN**: Executa comandos dentro do ambiente de compilação, criando uma nova camada imutável no topo da imagem atual.
 
 > Deve combinar múltiplos comandos Linux utilizando os operadores ; ou && e a barra invertida \ para quebra de linha. Isto agrupa as instruções num único bloco RUN, gerando apenas uma camada na imagem, o que reduz drasticamente o tamanho final do pacote.
 
-- EXPOSE: Funciona como documentação metadata. Informa o Docker (e o utilizador) sobre a porta em que o contentor estará a escutar o tráfego em tempo de execução. Pode especificar portas TCP ou UDP (ex: EXPOSE 53/udp). Se omitido, o padrão TCP é assumido.
-- CMD: Define o comando padrão que será executado assim que o contentor for iniciado. Só pode existir uma única instrução CMD ativa no Dockerfile (se colocar várias, apenas a última será executada). O CMD pode ser facilmente substituído se o utilizador passar um comando diferente no final do docker run.
-- ENTRYPOINT: Permite configurar o contentor para funcionar como se fosse um executável binário fixo do sistema operacional. Ao contrário do CMD, o comando definido no ENTRYPOINT não é ignorado quando o utilizador passa argumentos no docker run; em vez disso, esses argumentos externos são anexados como parâmetros ao próprio ENTRYPOINT.
+- **EXPOSE**: Funciona como documentação metadata. Informa o Docker (e o utilizador) sobre a porta em que o contentor estará a escutar o tráfego em tempo de execução. Pode especificar portas TCP ou UDP (ex: EXPOSE 53/udp). Se omitido, o padrão TCP é assumido.
+- **CMD**: Define o comando padrão que será executado assim que o contentor for iniciado. Só pode existir uma única instrução CMD ativa no Dockerfile (se colocar várias, apenas a última será executada). O CMD pode ser facilmente substituído se o utilizador passar um comando diferente no final do docker run.
+- **ENTRYPOINT**: Permite configurar o contentor para funcionar como se fosse um executável binário fixo do sistema operacional. Ao contrário do CMD, o comando definido no ENTRYPOINT não é ignorado quando o utilizador passa argumentos no docker run; em vez disso, esses argumentos externos são anexados como parâmetros ao próprio ENTRYPOINT.
 
-> ENTRYPOINT + CMD: Uma arquitetura avançada muito comum utiliza o ENTRYPOINT para definir o executável principal (ex: ENTRYPOINT ["nginx"]) e o CMD para fornecer os parâmetros padrão que podem ser alterados pelo utilizador (ex: CMD ["-g", "daemon off;"]).
+> **ENTRYPOINT + CMD**: Uma arquitetura avançada muito comum utiliza o ENTRYPOINT para definir o executável principal (ex: ENTRYPOINT ["nginx"]) e o CMD para fornecer os parâmetros padrão que podem ser alterados pelo utilizador (ex: CMD ["-g", "daemon off;"]).
 **Definições**
 
 ### Laboratório 1: O Contentor de Eco | Crianção do dockerfile
@@ -329,15 +330,15 @@ Valide se a imagem foi registada com sucesso no seu repositório local:
 docker image ls
 ```
 
-Se executarmos o contentor sem passar nenhum argumento adicional, ele irá recorrer ao valor padrão definido no CMD (--help):
+Se executarmos o container sem passar nenhum argumento adicional, ele irá recorrer ao valor padrão definido no CMD (--help):
 
 ```bash
 docker container run --rm -it echo-container
 ```
 
-A opção --rm é uma excelente prática de laboratório. Ela garante que o contentor será automaticamente eliminado do sistema assim que terminar a sua execução, evitando a acumulação de lixo digital no disco rígido.
+A opção --rm é uma excelente prática de laboratório. Ela garante que o contaier será automaticamente eliminado do sistema assim que terminar a sua execução, evitando a acumulação de lixo digital no disco rígido.
 
-Agora, execute o mesmo contentor, mas adicione uma frase personalizada no final do comando:
+Agora, execute o mesmo container, mas adicione uma frase personalizada no final do comando:
 
 ```bash
 docker container run --rm -it echo-container Olá Mundo, aprendendo Docker com conteúdo DCA!
@@ -349,7 +350,7 @@ Ao passar argumentos após o nome da imagem, o utilizador substituiu o CMD origi
 
 ### Laboratório 2: Criar um Servidor Web Apache
 
-Vamos elevar o nível e criar uma imagem personalizada que transforma um contentor minimalista do Debian num servidor web Apache totalmente funcional.
+Vamos elevar o nível e criar uma imagem personalizada que transforma um Ccontainer minimalista do Debian num servidor web Apache totalmente funcional.
 
 ```bash
 # Cria uma nova pasta para o servidor web e acede à mesma
@@ -410,13 +411,16 @@ Ou a sintaxe clássica equivalente:
 `docker images`
 
 2. Transferir uma Imagem de um Registo
+
 Para descarregar uma imagem oficial ou comunitária diretamente do Docker Hub para o seu servidor sem precisar de iniciar um contentor de imediato, utilize o comando pull:
 
 Bash
 docker image pull <nome-da-imagem>
 # Exemplo prático:
 docker image pull python:3.10-slim
+
 3. Filtrar a Listagem de Imagens
+
 Quando o seu servidor tem centenas de imagens e precisa de localizar um componente específico de forma ágil, utilize a flag -f (filter) combinada com um critério de referência:
 
 Bash
@@ -424,27 +428,34 @@ docker image ls -f "reference=webserver"
 ⚠️ Atenção ao Terminal: Certifique-se sempre de que utiliza aspas retas padrão (") no seu terminal. A utilização de aspas tipográficas ou curvas (“) resultará num erro de sintaxe no Bash.
 
 4. Pesquisar Imagens no Docker Hub via CLI
+
 Se quiser validar se uma imagem existe ou verificar a sua popularidade (número de estrelas) sem sair do terminal, utilize o comando search:
 
-Bash
 docker search ubuntu
+
 5. Remover uma Imagem do Repositório Local
+
 Para eliminar uma imagem do seu disco rígido local, utilize o ID ou o nome da imagem. Lembre-se de que a imagem não pode estar a ser utilizada por nenhum contentor (mesmo que este esteja parado).
 
-Bash
 docker image rm <id-da-imagem>
+
 # Ou a sintaxe clássica equivalente:
+
 docker rmi <id-da-imagem>
+
 6. Limpeza Automatizada (Prune)
+
 Com o passar do tempo, as construções sucessivas de Dockerfiles deixam imagens órfãs ou pendentes (dangling images — aquelas que aparecem listadas com o nome <none>). Para libertar espaço em disco removendo todas as imagens não utilizadas que não estejam associadas a nenhum contentor ativo ou parado, execute:
 
-Bash
+
 docker image prune
+
 💡 Dica de Limpeza Profunda: O comando acima remove apenas as imagens sem nome (<none>). Se quiser fazer uma purga total e apagar absolutamente todas as imagens locais que não tenham nenhum contentor associado no momento, adicione a flag -a (All): docker image prune -a.
 
 ## Enviando a imagem para o Dockerhub
 
 Publicar Imagens no Docker Hub
+
 A publicação de imagens num registo remoto garante a portabilidade do seu software. Ao enviar as suas imagens personalizadas para o Docker Hub, qualquer servidor ou membro da sua equipa poderá descarregá-las e utilizá-las instantaneamente com o comando docker image pull.
 
 O fluxo padrão para publicar uma imagem assenta estritamente em três passos sequenciais:
@@ -509,7 +520,6 @@ docker image push <seu_utilizador_dockerhub>/webserver
 
 O terminal exibirá o progresso do upload de cada camada (layer). Se uma camada já existir no Docker Hub (por ser partilhada com uma imagem oficial), o Docker exibirá a mensagem Layer already exists e saltará a transferência, economizando tempo e largura de banda.
 
-
 ## Enviar Múltiplas Tags em Massa (--all-tags)
 
 No desenvolvimento contínuo de software, é comum atribuir várias etiquetas à mesma imagem (ex: marcar a mesma imagem idêntica como v1, 1.0.4 e latest para dar flexibilidade de reversão aos utilizadores).
@@ -569,7 +579,7 @@ Dizer que um contentor é efémero significa que ele deve ter a capacidade de se
 
 Uma excelente metodologia estrutural para alcançar este nível de maturidade e portabilidade na nuvem é a The Twelve-Factor App (especialmente relevante para quem desenha pipelines de CI/CD). Na sua secção dedicada aos Processos (Processes), o manifesto estipula que as aplicações modernas devem ser executadas como processos stateless (sem retenção de estado).
 
-O que é um Processo Stateless? 
+### O que é um Processo Stateless? 
 
 Significa que o contentor não deve depender nem guardar dados cruciais ou persistentes no seu próprio sistema de ficheiros local (na sua camada gravável superior). Quaisquer dados que precisem de persistir além do ciclo de vida do contentor — como uploads de utilizadores, logs históricos ou bases de dados — devem obrigatoriamente ser armazenados num serviço de suporte externo (backing service), como um banco de dados gerido, um sistema de ficheiros em rede (NFS) ou volumes partilhados do Docker.
 
@@ -720,7 +730,6 @@ Se observar a primeira linha do output do comando, verá que a pasta log foi com
 `Sending build context to Docker daemon  2.712kB`
 
 O tamanho do contexto caiu instantaneamente dos 26.62 MB anteriores para escassos 2.7 KB (ligeiramente maior do que o primeiro build apenas porque agora incluímos o próprio ficheiro .dockerignore no envio). O processo voltou a ser ultra-rápido, poupando CPU e memória.
-
 
 ### Técnicas Avançadas de Otimização de Dockerfiles
 

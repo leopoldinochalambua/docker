@@ -251,17 +251,17 @@ Vamos instalar o pacotes: `zsh`.
 
 **Editamos o arquivo** `.zshrc`, **e mudamod o tema para** `agnoster`.
 
-[zsh](imagens/zsh3.png)
+![zsh](../imagens/zsh3.png)
 
 **Instalamos as fontes para o tema.**
 
 - `sudo apt install fonts-powerline`
 
-[zsh](imagens/dev4.png)
+!![zsh](../imagens/dev4.png)
 
 > Apos fazer logout, as mudanças entram em vigor.
 
-[zsh](imagens/zsh5.png)
+![zsh](../imagens/zsh5.png)
 
 **Configure seu git com os comandos abaixo:**
 
@@ -287,8 +287,7 @@ Pode descarregar o script diretamente ou analisar o seu conteúdo acedendo ao en
 
 - Executa o script com privilégios de root: `sudo sh get-docker.sh`
 
-
-2ª Opção: Repositório Manual (Método Tradicional)
+**2ª Opção: Repositório Manual**
 
 Este é o método oficial, recomendado para ambientes corporativos e o único método cobrado explicitamente nos exames de certificação (como o Docker DCA). Consiste em adicionar manualmente as chaves GPG e o repositório oficial da distribuição ao gestor de pacotes (apt ou dnf).
 
@@ -297,8 +296,6 @@ Para fins de demonstração prática no nosso ambiente, iremos distribuir os mé
 Máquina `master`. instalação via Script de Conveniência (para compreendermos o funcionamento da automação). Máquinas `node01` e `node02`, instalação via Repositório Manual (seguindo o método tradicional e oficial).
 
 ## Instalação por script de Conveniência.
-
-![Docker-install](imagens/docker.png)
 
 A pagina de instalação do docker pode ser encontrada [aqui](https://docs.docker.com/engine/install/).
 
@@ -316,15 +313,15 @@ Antes de descarregarmos o script, precisamos de efetuar alguns ajustes e prepara
 
 - Atualização das listas de repositório: `sudo apt update`
 
-[Docker-install](imagens/docker3.png)
+![Docker-install](../imagens/docker3.png)
 
 - Instalar as atualizações: `sudo apt upgrade`
 
-[Docker-install](imagens/docker4.png)
+![Docker-install](../imagens/docker4.png)
 
 - Instalação de pacotes básicos: `sudo apt install vim curl wget`
 
-[Docker-install](imagens/docker5.png)
+![Docker-install](../imagens/docker5.png)
 
 Para instalar o Docker através do script de conveniência, basta descarregar o ficheiro e executá-lo:
 
@@ -338,15 +335,15 @@ Alternativamente, poderíamos executar todo o processo numa única linha de coma
 vagrant@master:~$ curl -fsSl https://get.docker.com | sudo bash
 ```
 
-[Docker-install](imagens/docker6.png)
+![Docker-install](../imagens/docker6.png)
 
 No final do processo, o próprio terminal exibirá as informações que confirmam o sucesso da operação.
 
-[Docker-install](imagens/docker7.png)
+![Docker-install](../imagens/docker7.png)
 
 De seguida, é apresentada a mensagem informando que o Docker Engine foi instalado com êxito e está pronto a ser utilizado.
 
-[Docker-install](imagens/docker8.png)
+![Docker-install](../imagens/docker8.png)
 
 > Em distribuições baseadas em Red Hat (como o AlmaLinux ou RHEL), seria necessário habilitar e iniciar o serviço manualmente via systemctl após a instalação. No entanto, em sistemas baseados em Debian/Ubuntu (como é o caso da nossa máquina master), o script faz isso de forma totalmente automatizada:
 
@@ -425,7 +422,7 @@ Vamos também instalar o recurso de `Bash Completion` através do comando:
 $ sudo curl https://raw.githubusercontent.com/docker/machine/v0.16.0/contrib/completion/bash/docker-machine.bash -o /etc/bash_completion.d/docker-machine
 ```
 
-[Docker-install](imagens/docker18.png)
+[Docker-install](../imagens/docker18.png)
 
 Saia do terminal e inicie uma nova sessão e o usuário já poderá executar o comando como super user.
 
@@ -484,13 +481,13 @@ Uma vez conectado na máquina docker, execute os seguintes comandos:
 
 **Atualização do repositório**
 
-[Docker-install](imagens/docker21.png)
+![Docker-install](../imagens/docker21.png)
 
 **Instalação de pacotes utéis.**
 
 - `sudo yum install yum-utils epel-release`
 
-[Docker-install](imagens/docker22.png)
+![Docker-install](../imagens/docker22.png)
 
 **O que são esses pacotes:**
 
@@ -503,27 +500,27 @@ Adicionar os repositório docker no almalinux
 
 > Para o AlmaLinux, o repositório correto a ser mapeado é o do CentOS (que compartilha a mesma base binária do RHEL).
 
-[Docker-install](imagens/docker23.png)
+![Docker-install](../imagens/docker23.png)
 
 Instalação do docker
 
-[Docker-install](imagens/docker24.png)
+![Docker-install](../imagens/docker24.png)
 
 Instalação completa
 
-[Docker-install](imagens/docker25.png)
+![Docker-install](../imagens/docker25.png)
 
 Após a conclusão da instalação, podemos configurar agora nosso usuário para fazer parte do grupo `docker`, isso garantirá que possamos executar os comandos do docker sem a necessidade de elevar os privilégios.
 
-[Docker-install](imagens/docker26.png)
+![Docker-install](../imagens/docker26.png)
 
-> Nos sistemas RHEL like, precisamos habilitar e iniciar o serviço após a instalação do mesmo.
+> Nos sistemas **RHEL-like**, precisamos habilitar e iniciar o serviço após a instalação do mesmo.
 
 ```bash
 $ sudo systemctl enable --now docker
 $ sudo systemctl start docker
 ```
-[Docker-install](imagens/docker27.png)
+![Docker-install](../imagens/docker27.png)
 
 Vamos também instalar o recurso de `Bash Completion` através do comando:
 
@@ -531,7 +528,7 @@ Vamos também instalar o recurso de `Bash Completion` através do comando:
 $ sudo curl https://raw.githubusercontent.com/docker/machine/v0.16.0/contrib/completion/bash/docker-machine.bash -o /etc/bash_completion.d/docker-machine
 ```
 
-[Docker-install](imagens/docker28.png)
+![Docker-install](../imagens/docker28.png)
 
 Saia do terminal e inicie uma nova sessão e o usuário já poderá executar o comando como super user.
 
@@ -546,11 +543,11 @@ Para garantirmos que o docker foi instalado corretamente e está funcional, pode
 
 `$ docker container run --rm -it hello-world`
 
-[Docker-install](imagens/docker29.png)
+![Docker-install](../imagens/docker29.png)
 
 > Já vimos anteriormente o que o comando `$ docker container run --rm -it hello-world` faz.
 
-![Componentes](imagens/01componentes.png)
+![Componentes](../imagens/01componentes.png)
 
 ### Docker Client
 
@@ -640,9 +637,9 @@ Para compreender a linha de comandos do Docker, o primeiro passo é perceber que
 
 Para consultar a lista completa de opções e comandos globais a qualquer momento, basta executar o comando de ajuda no seu terminal:
 
-`docker help`
+`docker --help`
 
-[Docker-install](imagens/docker30.png)
+![Docker-install](../imagens/docker30.png)
 
 Se precisar de ajuda específica para uma categoria (por exemplo, contentores), pode refinar a pesquisa utilizando:
 
@@ -662,7 +659,7 @@ Já com a sessão iniciada na nossa máquina virtual, vamos começar a executar 
 
 Para visualizar as informações gerais do ambiente, podemos utilizar o comando `docker system info` (ou o seu atalho `docker info`). Este comando exibirá dados estruturais importantes, tais como a versão do motor, a quantidade de containers ativos e parados, os storage drivers em utilização, entre outros.
 
-[Docker-install](imagens/docker33.png)
+![Docker-install](../imagens/docker33.png)
 
 _Os comandos listados acima são equivalentes._
 
@@ -677,19 +674,19 @@ _Os comandos listados acima são equivalentes._
 
 Para procurar uma imagem oficial ou comunitária diretamente no Docker Hub, utilizamos o comando `docker search` seguido do nome do componente desejado:
 
-[Docker-install](imagens/docker34.png)
+![Docker-install](../imagens/docker34.png)
 
 Para transferir a imagem do registo para a nossa máquina local, utilizamos o comando `docker image pull`:
 
-[Docker-install](imagens/docker35.png)
+![Docker-install](../imagens/docker35.png)
 
 Podemos efetuar o mesmo procedimento para obter a imagem do Alma Linux:
 
-[Docker-install](imagens/docker36.png)
+![Docker-install](../imagens/docker36.png)
 
 Para validar e listar todas as imagens que foram descarregadas e que já se encontram armazenadas localmente, executamos: `docker image ls`
 
-[Docker-install](imagens/docker37.png)
+![Docker-install](../imagens/docker37.png)
 
 ### Primeiro Container
 
@@ -697,7 +694,7 @@ Para criar e instanciar um novo container, utilizamos o comando docker container
 
 `docker container run -dit --name debian1 --hostname c1 debian`.
 
-[Docker-install](imagens/docker38.png)
+![Docker-install](../imagens/docker38.png)
 
 **Descrição do comando:**
 
@@ -709,13 +706,13 @@ Para criar e instanciar um novo container, utilizamos o comando docker container
 
 Agora que temos o nosso primeiro contentor em execução, podemos listá-lo com `docker container ls` e ligar-nos diretamente à sua consola interativa através do comando `docker container attach`:
 
-[Docker-install](imagens/docker39.png)
+![Docker-install](../imagens/docker39.png)
 
 > Repare que, ao ligar-se ao contentor, o indicador do terminal (PS1) altera-se imediatamente para `root@c1:/#`, confirmando que está a operar como superutilizador dentro do ecossistema isolado.
 
 Se tentar executar o comando `ip` a ou `ip link` para verificar o endereçamento de rede, irá deparar-se com um erro:
 
-[Docker-install](imagens/docker40.png)
+![Docker-install](../imagens/docker40.png)
 
 Este comportamento é perfeitamente normal. As imagens oficiais do Docker são propositadamente minimalistas para garantir leveza e segurança, pelo que não trazem ferramentas de rede pré-instaladas. O utilitário `ip` faz parte do pacote `iproute2`, que precisa de ser instalado manualmente. 
 
@@ -723,40 +720,40 @@ Para resolver isto, atualize o índice de pacotes internos do contentor e instal
 
 Atualiza as listas de repositórios do Debian interno.
 
-[Docker-install](imagens/docker41.png)
+![Docker-install](../imagens/docker41.png)
 
 Instala o pacote de ferramentas de rede.
 
-[Docker-install](imagens/docker42.png)
+![Docker-install](../imagens/docker42.png)
 
 Agora já pode validar a interface de rede virtual do container executando:
 
-[Docker-install](imagens/docker43.png)
+![Docker-install](../imagens/docker43.png)
 
 Pode testar outros comandos utilitários para auditoria, tais como hostname ou inspecionar o mapeamento de DNS local: `hostname` e `cat /etc/hosts`.
 
-[Docker-install](imagens/docker44.png)
+![Docker-install](../imagens/docker44.png)
 
 Se digitar o comando `exit` para sair do terminal do contentor e de seguida tentar listar os contentores ativos `docker container ls`, ou `docker container ls -a` irá notar um comportamento importante:
 
-[Docker-install](imagens/docker45.png)
+![Docker-install](../imagens/docker45.png)
 
 Compreender a diferença entre os seguintes comandos é crucial no dia a dia:
 
 - `docker container ls`: Apresenta única e exclusivamente os container que estão ativos e em execução (Running).
 - `docker container ls -a (All)`: Exibe o histórico completo de todos os container do sistema, estejam eles ativos, pausados ou parados (Exited).
 
-> O contentor parou porque, ao digitar exit, o processo principal (o PID 1, que era o próprio Bash) terminou com um código de retorno. Lembre-se: um container permanece ativo apenas enquanto o seu processo principal estiver em execução.
+> O container parou porque, ao digitar `exit`, o processo principal (o PID 1, que era o próprio Bash) terminou com um código de retorno. Lembre-se: um container permanece ativo apenas enquanto o seu processo principal estiver em execução.
 
 Para listar de forma rápida apenas os IDs hexadecimais de todos os container (útil para automações e scripts de limpeza), utilize a flag -q (Quiet): `docker container ls -aq`
 
-[Docker-install](imagens/docker46.png)
+![Docker-install](../imagens/docker46.png)
 
 Para reativar um container que foi parado sem ter de criar um novo do zero, utilizamos o comando `docker container start`. Para o interromper de forma controlada a partir de fora, usamos o `docker container stop`:
 
-Inicia o contentor parado, e liga-se novamente à consola dele.
+Inicia o container parado, e liga-se novamente à consola dele.
 
-[Docker-install](imagens/docker47.png)
+![Docker-install](../imagens/docker47.png)
 
 ### Estado e a Sequência de Escape
 
@@ -766,11 +763,11 @@ Se quiser sair do terminal do contentor sem o desligar, deixando-o a correr em s
 <CTRL> + <P> + <Q>
 ```
 
-[Docker-install](imagens/docker48.png)
+![Docker-install](../imagens/docker48.png)
 
 Note que, ao regressar ao terminal da máquina hospedeira, se executar `docker container ls`, o estado do contentor aparecerá como `Up`, confirmando que ele continua em plena execução nos bastidores.
 
-[Docker-install](imagens/docker49.png)
+![Docker-install](../imagens/docker49.png)
 
 ### Auditoria e Logs do container
 
@@ -840,52 +837,90 @@ Para parar e remover o contentor de forma limpa, e de seguida auditar o ambiente
 - Remove o contentor do sistema: `docker container rm debian1`
 - Valida se o contentor foi totalmente removido: `docker container ls -a`
 
-[Docker-install](imagens/docker50.png)
+![Docker-install](../imagens/docker50.png)
 
 > **Noata:** É possível forçar a remoção de um contentor ativo sem o parar previamente utilizando a `flag -f` (Force): `docker container rm -f debian1`-
 
-### Cópia de Ficheiros e Execução Remota (cp e exec)
+### Cópia de Ficheiros e Execução Remota 
 
-Inicie um novo contentor de testes:
+Para manipular ficheiros e executar comandos em contentores ativos sem a necessidade de abrir uma sessão interativa completa (como o attach ou um terminal bash), o ecossistema Docker disponibiliza os subcomandos `cp` e `exec`. 
+
+Para iniciar este laboratório, garanta que tem um container de testes limpo a correr em segundo plano:
 
 `docker container run -dit --name c1 --hostname c1 debian`
 
-[Docker-install](imagens/docker51.png)
-
-Crie um ficheiro de teste na pasta `/tmp` da máquina hospedeira para enviá-lo para dentro do contentor c1:
-
-```bash
-vagrant@node01:~$ echo "Arquivo de teste docker" > /tmp/arquivo.txt
-vagrant@node01:~$ docker container cp /tmp/arquivo.txt c1:tmp
-Successfully copied 2.05kB to c1:tmp
-```
-
-[Docker-install](imagens/docker52.png)
-
-> O comando `docker container cp` é bidirecional. Permite copiar ficheiros da máquina hospedeira (host) para dentro do contentor, ou extrair ficheiros do contentor para o host.
-
-Para verificar se o ficheiro foi copiado corretamente sem ter de abrir uma sessão interativa `(attach)`, utilize o comando `exec`:
-
-[Docker-install](imagens/docker53.png)
+![Docker-install](../imagens/docker-cp.png)
 
 
-```bash
-[vagrant@node02 ~]$ docker container exec c1 ls -l /tmp
-total 4
--rw-rw-r--. 1 1000 1000 24 May 22 10:48 arquivo.txt
-[vagrant@node02 ~]$ docker container exec c1 cat /tmp/arquivo.txt
-Arquivo de teste docker
-```
+1. **Máquina Hospedeira --> Container**
 
-> O comando **docker container exec** executa um comando no container e envia o retorno na saída padrão(STDOUT) da máquina, caso o container não tenha sido iniciado com a opção **-i** o retorno não será mostrado no STDOUT.
+O comando `docker container cp` permite injetar ficheiros ou pastas inteiras diretamente para dentro do sistema de ficheiros de um container ativo. 
 
-Remova o contentor c1 antes de avançar para o próximo exercício:
+Crie um ficheiro de teste na pasta `/tmp` da máquina hospedeira para enviá-lo para dentro do container **c1**, copia do Host para a pasta `/tmp` do container **c1**:
 
-[Docker-install](imagens/docker54.png)
- 
+`echo "Ficheiro de teste obtido do Host" > /tmp/host-container.txt`
+
+e 
+
+`docker container cp /tmp/host-container.txt c1:/tmp/`
+
+![Docker-install](../imagens/docker-cp1.png)
+
+Output esperado de sucesso:
+
+`Successfully copied 2.05kB to c1:/tmp/`
+
+2. **Execução Remota de Comandos**
+
+Para verificar se o ficheiro foi copiado corretamente sem ter de abrir uma sessão interativa dentro do container, utilize o comando `exec`. Ele executa o binário diretamente no espaço de nomes do container e devolve o resultado:
+
+`docker container exec c1 ls -l /tmp`
+
+![Docker-install](../imagens/docker-cp2.png)
+
+**Lê o conteúdo do ficheiro de forma remota**
+
+`docker container exec c1 cat /tmp/host-container.txt`
+
+![Docker-install](../imagens/docker-cp3.png)
+
+> O comando `docker container exec` envia o retorno do processo executado diretamente para a saída padrão (STDOUT) do seu terminal. Contudo, note que se tentar executar um comando interativo (como um shell bash) sem a flag -it, o processo falhará ou terminará de imediato porque precisa de um pseudo-TTY anexado ao teclado (STDIN).
+
+3. **Contentor --> Máquina Hospedeira**
+
+Como o comando `docker container cp` é estritamente bidirecional, também o podemos utilizar para extrair logs, ficheiros de configuração alterados ou artefactos gerados dentro do container para a nossa máquina física. Primeiro, vamos gerar um ficheiro de dados simulado diretamente de dentro do contentor c1:
+
+Executa um comando remoto para criar um ficheiro interno no container
+
+`docker container exec c1 sh -c 'echo "Relatorio gerado dentro do container c1" > /tmp/relatorio-interno.txt'`
+
+![Docker-install](../imagens/docker-cp4.png)
+
+Agora, execute a extração desse ficheiro para a pasta home (~/) do utilizador `Vagrant` na máquina hospedeira. Repare que apenas invertemos a ordem dos argumentos na sintaxe:
+
+docker container cp CONTAINER:CAMINHO_INTERNO CAMINHO_NO_HOST
+
+`docker container cp c1:/tmp/relatorio-interno.txt ~/`
+
+![Docker-install](../imagens/docker-cp5.png)
+
+# Valida se o ficheiro foi guardado com sucesso no Host
+
+`cat ~/relatorio-interno.txt`
+
+![Docker-install](../imagens/docker-cp6.png)
+
+**Limpeza do Ambiente**
+
+Após validar a comunicação bidirecional de ficheiros e a execução remota, remova o container **c1** forçando a paragem para libertar os recursos do nó:
+
+`docker container rm -f c1`
+
+![Docker-install](../imagens/docker53.png)
+
 ### Automatização com Scripts: Criação e Remoção em Massa
 
-Se precisarmos de criar containers de teste sequencialmente para simular uma carga de trabalho, podemos utilizar uma estrutura de repetição (loop) em Bash:
+Se precisarmos de criar containers de teste sequencialmente para simular uma carga de trabalho, podemos utilizar uma estrutura de repetição **(loop**) em Bash:
 
 ```bash
 for i in $(seq 1 10)
@@ -895,7 +930,7 @@ for i in $(seq 1 10)
 ```
 Se preferir executar tudo numa única linha diretamente no terminal: `for i in $(seq 1 10); do docker container run -it hello-world; done`.
 
-[Docker-install](imagens/docker55.png)
+![Docker-install](../imagens/docker55.png)
 
 **Explicação**
 
@@ -912,8 +947,7 @@ Para listar apenas os identificadores hexadecimais únicos (IDs) de todos os con
 
 `docker container ls -aq`
 
-[Docker-install](imagens/docker56.png)
-
+![Docker-install](../imagens/docker56.png)
 
 ### Apagar todos os containers de uma vez
 
@@ -923,7 +957,7 @@ Para limpar o ambiente de laboratório e eliminar todos os contentores (ativos o
 
 O Bash executa primeiro o comando que está dentro dos parênteses $(...), que gera a lista com todos os IDs existentes. De seguida, injeta essa lista como argumento diretamente no comando `docker container rm -f`, eliminando-os a todos em simultâneo.
 
-[Docker-install](imagens/docker57.png)
+![Docker-install](../imagens/docker57.png)
 
 ## Play with Docker (PWD)
 
@@ -963,7 +997,7 @@ Execute o seguinte comando no terminal da sua máquina hospedeira:
 
 Após concluir os testes e os exercícios do dia, é uma excelente prática de administração de sistemas limpar o ambiente de contentores e desligar a infraestrutura de máquinas virtuais (Vagrant) para libertar os recursos de hardware (RAM e CPU) do seu computador.
 
-Siga estes passos sequenciais: 
+**Siga estes passos sequenciais:** 
 
 1. Antes de desligar a máquina virtual, remova o contentor que ficou a correr em segundo plano: `docker container rm -f mario`
 
@@ -971,11 +1005,11 @@ Siga estes passos sequenciais:
 
 3. Navegue até à pasta no seu computador local onde se encontra o ficheiro Vagrantfile do projeto e execute o comando de encerramento: `vagrant halt`
 
-[Docker-install](imagens/docker58.png)
+![Docker-install](../imagens/docker58.png)
 
 Pode ver também pela interface grafica do virt-manager
 
-[Docker-install](imagens/docker59.png)
+![Docker-install](../imagens/docker59.png)
 
 > Se no futuro quiser apagar completamente as máquinas virtuais do seu disco rígido para libertar espaço, o comando a utilizar na sua máquina local será o `vagrant destroy -f`. No entanto, o `vagrant halt` apenas as desliga (equivalente a fazer Shut Down), preservando todos os ficheiros e instalações que realizámos para a próxima aula.
 
@@ -1018,8 +1052,8 @@ Para garantir o sucesso no exame DCA e alinhar a comunicação técnica, recapit
 
 Este manual foi estruturado com base nos requisitos oficiais da certificação Docker Certified Associate (DCA). Ao longo do nosso percurso, iremos abordar os seguintes módulos práticos:
 
-- 📦 Docker-DCA 01: Instalação, Arquitetura e Fundamentos (Concluído)
-- 🖥️ Docker-DCA 02: Comandos Estruturais, Ciclo de Vida e Imagens
+- 📦 **Docker-DCA 01: Instalação, Arquitetura e Fundamentos**
+- 🖥️ **Docker-DCA 02: Comandos Estruturais, Ciclo de Vida**
 - 🛠️ Docker-DCA 03: Docker Images – Melhores Práticas e Multistage Build
 - 💾 Docker-DCA 04: Persistência de Dados com Volumes
 - 🔌 Docker-DCA 05: Plugins de Volumes e Armazenamento Distribuído

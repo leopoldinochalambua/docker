@@ -1,3 +1,5 @@
+# Capítulo 04
+
 As redes do Docker permitem que os contentores comuniquem entre si, com o anfitrião do Docker e com sistemas externos. Cada contentor é executado no seu próprio ambiente de rede isolado, com um endereço IP e uma interface de rede únicos. Os contentores na mesma rede podem comunicar diretamente sem expor portas ao anfitrião, permitindo-lhe criar aplicações seguras e interligadas com vários contentores.
 
 Conceitos fundamentais de rede
