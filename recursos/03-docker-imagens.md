@@ -37,7 +37,7 @@ Um **Docker Registry** é um sistema centralizado de armazenamento e distribuiç
 
 ### Conta no Dockerhub
 
-Aceda ao endereço [oficial](hub.docker.com) e clique em **Sign Up** para iniciar o registo.
+Aceda ao endereço [oficial](https://hub.docker.com/) e clique em **Sign Up** para iniciar o registo.
 
 ![Registro](resources/02dockerhub1.png)
 

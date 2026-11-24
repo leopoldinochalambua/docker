@@ -2,7 +2,7 @@
 
 ## O que é o Docker
 
-**Docker** é uma plataforma Open Source escrita em **Go (Linguagem de programação em alta performance desenvolvida pela Google)** que ajuda na criação e a administração de ambientes isolados. Isso permite que as aplicações partilhem o kernel do SO anfitrião em vez de executarem um SO convidado. Este design torna os **containers Docker** leves, rápidos e portáteis, mantendo-os isolados uns dos outros
+**Docker** é uma plataforma Open Source escrita em **Go (Linguagem de programação em alta performance desenvolvida pela Google)** que ajuda na criação e a administração de ambientes isolados. Isso permite que as aplicações partilhem o kernel do SO anfitrião em vez de executarem um SO convidado. Este design torna os **containers Docker** leves, rápidos e portáteis, mantendo-os isolados uns dos outros.
 
 Com a utilização do Docker podemos gerenciar toda a infraestutura de uma aplicação, bem como garantir que ambientes de desenvolvimento, homologação e produção contenham os mesmos componentes e versões de aplicações, a fim de minimizar impactos no processo de desenvolvimento e entrega de software.
 
@@ -10,14 +10,14 @@ O Docker trabalha com uma virtualização a nível do sistema operacional, onde 
 
 **Então o docker já trás as seguintes vantagens:**
 
-- Escrito na linguagem de programação Go.
-- Suporta instalações Windows, macOS e Linux (o Docker Engine é executado nativamente no Linux).
-- Resolve o problema _“funciona na minha máquina”_, garantindo que o código seja executado de forma idêntica em todos os ambientes.
-- Ao contrário do VMware (virtualização no nível do hardware), o Docker opera no nível do sistema operacional.
+- Escrito na linguagem de programação Go;
+- Suporta instalações em Windows, macOS e Linux (o Docker Engine é executado nativamente no Linux);
+- Resolve o problema _“funciona na minha máquina”_, garantindo que o código seja executado de forma idêntica em todos os ambientes;
+- Ao contrário do VMware (virtualização no nível do hardware), o Docker opera no nível do sistema operacional;
 
 Embora o Docker e as máquinas virtuais tenham um propósito semelhante, seu desempenho, portabilidade e suporte a sistemas operacionais diferem significativamente.
 
-**A principal diferença é que os containers do Docker compartilham o sistema operacional do host, enquanto as máquinas virtuais também têm um sistema operacional convidado sendo executado no sistema host, (virtual box,vmware, etc...)**. Esse método de operação afeta o desempenho, as necessidades de hardware e o suporte do SO. Confira a tabela abaixo para uma comparação detalhada.
+**A principal diferença é que os containers do Docker compartilham o sistema operacional do host, enquanto as máquinas virtuais também têm um sistema operacional convidado sendo executado no sistema host, (virtual box,vmware, etc...)**. Esse método de operação afeta o desempenho, as necessidades de hardware e o suporte do SO. Confira a imagem abaixo para uma comparação detalhada.
 
 ![VM x Containers](../imagens/docker-vm.png)
 
@@ -26,19 +26,17 @@ Embora o Docker e as máquinas virtuais tenham um propósito semelhante, seu des
 
 ### Por que usar Docker?
 
-**Antes do Docker:**
-
 A implantação de aplicativos entre ambientes era muitas vezes difícil, dependências, configurações e variações de sistema operacional causavam dores de cabeça do tipo **“funciona aqui, mas não lá”**.
 
 Em 2013, Docker introduziu o que se tornou o padrão da indústria para containers, trouxe uma maneira simples, rápida e eficiente de executar aplicações sem a complexidade de uma máquina virtual.
 
-Docker garante um ecossistema completo, fazendo com que o desenvolvedor possa trabalhar sem se preocupar, por exemplo, com a abertura de tickets para uma equipe de infraestrutura provisionar um ambiente por completo, atrasando o trabalho de entrega de software.
+O Docker garante um ecossistema completo, fazendo com que o desenvolvedor possa trabalhar sem se preocupar, por exemplo, com a abertura de tickets para uma equipe de infraestrutura provisionar um ambiente por completo, atrasando o trabalho de entrega de software.
 
 Existem diversas engines e runtimes de containers e até é possível utilizar containers sem Docker, mas atualmente o Docker é a engine/runtime de container mais utilizada no mercado, o que torna o conhecimento do mesmo um **"Must have"** e dificilmente encontraremos vagas na área de tecnologia que não pedem um conhecimento, mesmo que básico, de containers ou Docker. **Viu a expressão container?**. Vamos ver mais adiante.
 
 ### Componentes do Docker
 
-A seguir estão alguns dos principais componentes do Docker:
+**A seguir estão alguns dos principais componentes do Docker**:
 
 - **Docker Engine:** O Docker Engine tem um daemon docker como parte central, que lida com a criação e o gerenciamento de contêineres.
 - **Imagem do Docker:** A imagem Docker é um modelo só de leitura que é utilizado para criar conatainers, contendo o código da aplicação e as dependências.
@@ -48,7 +46,7 @@ A seguir estão alguns dos principais componentes do Docker:
 
 ### Docker Engine
 
-O Docker Engine é o componente principal que permite que o Docker execute containeres em um sistema. Segue uma arquitetura cliente-servidor e é responsável pela criação, execução e gestão de contentores Docker.
+O Docker Engine é o componente principal que permite que o Docker execute containeres em um sistema. Segue uma arquitetura **cliente-servidor** e é responsável pela criação, execução e gestão de contentores Docker.
 
 - O **Docker Engine Daemon (dockerd)** é executado em segundo plano, ouvindo pedidos de API e gerindo objectos como imagens, containers, redes e volumes.
 - O **Cliente Docker (docker CLI)** se comunica com o daemon usando uma API REST. Fornece o ambiente de execução onde as imagens Docker são instanciadas em containers activos.
@@ -60,7 +58,7 @@ Sem o motor Docker, as imagens Docker não podem ser construídas ou os containe
 - O **Cliente** envia comandos Docker (docker build, docker run, etc.).
 - O **Daemon** recebe estes comandos e executa operações de container. 
 
-> O daemon do Docker, muitas vezes referido simplesmente como "Docker", é um serviço em segundo plano que gere os contentores Docker num sistema
+> O daemon do Docker, muitas vezes referido simplesmente como "Docker", é um serviço em segundo plano que gere os contentores Docker num sistema.
 
 - A **API REST** é a interface que permite esta comunicação.
 
@@ -76,7 +74,7 @@ O Dockerfile é o código-fonte da imagem. É um documento de texto que contém 
 
 ### Imagem Docker
 
-Uma imagem Docker é um ficheiro composto por várias camadas que contém as instruções para construir e executar um contentor Docker. Funciona como um pacote executável que inclui tudo o que é necessário para executar uma aplicação - código, tempo de execução, bibliotecas, variáveis de ambiente e configurações.
+Uma imagem Docker é um ficheiro composto por várias camadas que contém as instruções para construir e executar um container Docker. Funciona como um pacote executável que inclui tudo o que é necessário para executar uma aplicação - código, tempo de execução, bibliotecas, variáveis de ambiente e configurações.
 
 ![Docker file](../imagens/docker-image.png)
 
@@ -95,7 +93,7 @@ Uma imagem Docker é um ficheiro composto por várias camadas que contém as ins
 
 O Docker utiliza uma arquitetura cliente-servidor. O cliente Docker 
 fala com o daemon Docker que ajuda a construir, executar e distribuir 
-os contentores Docker. O cliente Docker é executado com o daemon no 
+os containers Docker. O cliente Docker é executado com o daemon no 
 mesmo sistema ou podemos conectar o cliente Docker com o daemon Docker 
 remotamente. Com a ajuda da API REST através de um socket UNIX ou de 
 uma rede, o cliente Docker e o daemon interagem entre si. Para saber 
@@ -108,32 +106,19 @@ mais sobre o funcionamento do Docker, consulte arquitetura do docker.
 - **Daemon do Docker**: Trata de imagens, contentores, redes e volume. Serviço principal que gere objectos do Docker
 - **Tempo de execução de alto nível**: Gere as operações do ciclo de vida dos containers. As tarefas incluem criar, iniciar, parar e eliminar containers.
 
-## O que é um container
+## O que é um Contentor Docker?
 
-Um container é um ambiente completo que empacota uma aplicação e todas as suas dependências (bibliotecas, binários e arquivos de configuração) em um único pacote. Ao containerizar uma aplicação, as diferenças entre distribuições de sistemas operacionais e as camadas inferiores de infraestrutura são completamente abstraídas.
+Um container Docker é a instância viva, leve e executável de uma imagem Docker. Ele funciona como um pacote isolado que consolida uma aplicação e todas as suas dependências (bibliotecas, binários e ficheiros de configuração), garantindo que o código seja executado de forma rápida e idêntica em qualquer ambiente — seja no computador pessoal de um programador, em servidores de testes ou em instâncias de produção na nuvem.
 
-Todas as configurações e instruções para iniciar ou parar um container são ditadas por uma imagem Docker. Sempre que um usuário executa uma imagem, um novo container é gerado.
-
-O gerenciamento desses ambientes é feito de forma simples através da API do Docker ou da sua Interface de Linha de Comando (CLI). Além disso, caso seja necessário coordenar múltiplos containers interdependentes, os usuários podem controlá-los utilizando o Docker Compose (Ferramenta de composição).
-
-> **Analogia:** Imagine que o container Docker funciona exatamente como um contêiner de carga real em um navio cargueiro (o servidor). Todos os contêineres estão organizados lado a lado, compartilhando o mesmo navio, mas o conteúdo e o ecossistema de um não interferem nos outros.
+Tecnicamente, o container não é uma máquina virtual, mas sim um processo isolado que corre na máquina hospedeira (host), partilhando o mesmo kernel do sistema operativo nativo. Esta arquitetura permite lançar dezenas de containers simultaneamente no mesmo servidor com consumo mínimo de recursos (overhead) e total abstração das camadas de infraestrutura inferiores.
 
 ![Container](../imagens/container.png)
 
-Em suma, podemos dizer que o container é a unidade mínima computacional do Docker — ou seja, o menor recurso isolado que a plataforma pode fornecer.
+Pense no contêiner Docker como um contêiner de carga num navio cargueiro (o servidor). Vários contêineres partilham o espaço do mesmo navio, mas o conteúdo e o ecossistema interno de um não interferem nos outros.
 
-### Docker Container
+Todas as instruções de arranque, paragem e variáveis de ambiente de um contentor são ditadas pela sua imagem de origem (como uma imagem que combina o Ubuntu com o NGINX). A sua gestão é realizada através da CLI ou API do Docker — e, quando é necessário gerir múltiplos contentores de forma orquestrada, utiliza-se o Docker Compose.
 
-Um Contentor Docker é a instância viva, leve e executável de uma imagem Docker. Ele isola o código da aplicação juntamente com as suas dependências para garantir que a aplicação seja executada de forma rápida e consistente em qualquer ambiente — seja no computador pessoal dum programador, em servidores de testes ou em ambientes de produção na nuvem.
-
-Tecnicamente, o contentor é executado como um processo isolado na máquina hospedeira (host), mas partilhando o mesmo kernel do sistema operativo nativo. Isto permite que dezenas de contentores corram simultaneamente no mesmo sistema sem gerar overhead ou interferências mútuas.
-
-> Suponha que tem uma imagem que combine o sistema básico do Ubuntu com o servidor web NGINX. Ao executar esta imagem com o comando docker run, o Docker criará um contentor isolado onde o NGINX passará a correr imediatamente sobre essa base do Ubuntu.
-
-**Relação Fundamental:**
-
-- Imagem Docker: É o Blueprint / Receita (estática, imutável e de apenas leitura).
-- Docker Container: É a instância viva desse blueprint (dinâmica, isolada e executável).
+> Em suma, o contentor é a unidade mínima computacional do Docker — a menor instância funcional isolada que a plataforma disponibiliza.
 
 ### Distinção Histórica
 
@@ -663,14 +648,16 @@ Para visualizar as informações gerais do ambiente, podemos utilizar o comando 
 
 _Os comandos listados acima são equivalentes._
 
-> **Nota:** Para listar qualquer objeto no Docker (contentores, imagens, redes ou volumes), utilizamos uniformemente a sintaxe: 
+> **Nota:** Para listar qualquer objeto no Docker (containers, imagens, redes ou volumes), utilizamos uniformemente a sintaxe: 
 
 `docker <objeto> ls`
 
-- `docker container ls` - Lista os contentores ativos.
-- `docker image ls` - Lista as imagens locais.
-- `docker network ls` - Lista as redes configuradas.
-- `docker volume ls` - Lista os volumes de dados.
+| **Comando**           | **Descrição**                |
+| --------------------- | ---------------------------- |
+| `docker container ls` | Lista os containers ativos.  |
+| `docker image ls`     | Lista as imagens locais.     |
+| `docker network ls`   | Lista as redes configuradas. |
+| `docker volume ls`    | Lista os volumes de dados.   |
 
 Para procurar uma imagem oficial ou comunitária diretamente no Docker Hub, utilizamos o comando `docker search` seguido do nome do componente desejado:
 
@@ -904,7 +891,7 @@ docker container cp CONTAINER:CAMINHO_INTERNO CAMINHO_NO_HOST
 
 ![Docker-install](../imagens/docker-cp5.png)
 
-# Valida se o ficheiro foi guardado com sucesso no Host
+Valida se o ficheiro foi guardado com sucesso no Host
 
 `cat ~/relatorio-interno.txt`
 
